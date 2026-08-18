@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#060911' },
   content: { flex: 1 },
   scrollContent: { padding: 16 },
-  responsiveContainer: { maxWidth: 1200, alignSelf: 'center', width: '100%' },
+  responsiveContainer: { maxWidth: 1600, alignSelf: 'center', width: '100%' },
   heroCard: {
     backgroundColor: '#101827',
     borderRadius: 20,

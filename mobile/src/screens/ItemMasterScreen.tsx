@@ -477,7 +477,7 @@ export const ItemMasterScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#060911' },
-  responsiveContainer: { flex: 1, maxWidth: 1200, alignSelf: 'center', width: '100%', padding: 16 },
+  responsiveContainer: { flex: 1, maxWidth: 1600, alignSelf: 'center', width: '100%', padding: 16 },
   ownerControlHeader: { marginBottom: 12 },
   managerNotice: {
     backgroundColor: '#172554',

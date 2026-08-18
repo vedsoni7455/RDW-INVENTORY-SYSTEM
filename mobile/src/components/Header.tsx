@@ -9,13 +9,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
-  const { role, setRole, user, logout } = useAuth();
+  const { role, user, logout } = useAuth();
   const { width } = useWindowDimensions();
   const isDesktop = width >= 768;
-
-  const handleRoleSelect = (newRole: UserRole) => {
-    setRole(newRole);
-  };
 
   const handleLogout = () => {
     if (Platform.OS === 'web') {
@@ -43,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
     }
   };
 
-  const currentRoleStyle = getRoleBadgeStyle(role);
+  const currentRoleStyle = getRoleBadgeStyle(role || 'owner');
 
   return (
     <View style={styles.container}>
@@ -58,58 +54,29 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
           <View style={styles.textGroup}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.subtitle} numberOfLines={1}>
-              {user?.name || 'User'} • {subtitle || 'RDW Inventory'}
+              {user?.name || 'Restaurant User'} • {subtitle || 'RDW Inventory'}
             </Text>
           </View>
         </View>
 
-        {/* Role Switcher & Controls */}
+        {/* Fixed Non-Interactive Role Display & Logout */}
         <View style={styles.rightActions}>
-          {/* Quick Switch Buttons for Desktop/Tablet */}
-          {isDesktop ? (
-            <View style={styles.desktopRoleSwitcher}>
-              {(['owner', 'manager', 'staff'] as UserRole[]).map(r => {
-                const isSelected = role === r;
-                const rStyle = getRoleBadgeStyle(r);
-                return (
-                  <TouchableOpacity
-                    key={r}
-                    style={[
-                      styles.roleChip,
-                      { backgroundColor: isSelected ? rStyle.bg : '#131c2e', borderColor: isSelected ? rStyle.border : '#1e2e4a' },
-                    ]}
-                    onPress={() => handleRoleSelect(r)}
-                  >
-                    <Text style={[styles.roleChipText, { color: isSelected ? rStyle.text : '#64748b' }]}>
-                      {rStyle.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={[
-                styles.mobileRoleBadge,
-                { backgroundColor: currentRoleStyle.bg, borderColor: currentRoleStyle.border },
-              ]}
-              onPress={() => {
-                const roles: UserRole[] = ['owner', 'manager', 'staff'];
-                const next = roles[(roles.indexOf(role) + 1) % roles.length];
-                setRole(next);
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={[styles.mobileRoleText, { color: currentRoleStyle.text }]}>
-                {currentRoleStyle.label} ▾
-              </Text>
-            </TouchableOpacity>
-          )}
+          <View
+            style={[
+              styles.staticRoleBadge,
+              { backgroundColor: currentRoleStyle.bg, borderColor: currentRoleStyle.border },
+            ]}
+          >
+            <Text style={[styles.staticRoleText, { color: currentRoleStyle.text }]}>
+              {currentRoleStyle.label}
+            </Text>
+          </View>
 
           <TouchableOpacity
             style={styles.logoutBtn}
             onPress={handleLogout}
             activeOpacity={0.7}
+            accessibilityLabel="Log Out"
           >
             <Text style={styles.logoutText}>🚪</Text>
           </TouchableOpacity>
@@ -121,13 +88,14 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: Platform.OS === 'web' ? 16 : 48,
     paddingBottom: 14,
     backgroundColor: '#090d16',
     borderBottomWidth: 1,
     borderBottomColor: '#1e2e4a',
     position: 'relative',
+    width: '100%',
   },
   accentGlow: {
     position: 'absolute',
@@ -141,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    maxWidth: 1200,
+    maxWidth: 1600,
     alignSelf: 'center',
     width: '100%',
   },
@@ -187,35 +155,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  desktopRoleSwitcher: {
-    flexDirection: 'row',
+  staticRoleBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    borderWidth: 1,
     marginRight: 10,
   },
-  roleChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    borderWidth: 1,
-    marginLeft: 6,
-  },
-  roleChipText: {
-    fontSize: 11,
+  staticRoleText: {
+    fontSize: 12,
     fontWeight: '800',
-  },
-  mobileRoleBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginRight: 8,
-  },
-  mobileRoleText: {
-    fontSize: 11,
-    fontWeight: '800',
+    letterSpacing: 0.3,
   },
   logoutBtn: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     borderRadius: 10,
     backgroundColor: '#131c2e',
     justifyContent: 'center',
