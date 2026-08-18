@@ -1,0 +1,1527 @@
+{
+  "products": [
+    {
+      "name": "Red Chilli Sauce 750 ML",
+      "category": "Sauce",
+      "unit": "Bottle",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Green Chilli Sauce 750 ML",
+      "category": "Sauce",
+      "unit": "Bottle",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Soy Sauce 750 ML",
+      "category": "Sauce",
+      "unit": "Bottle",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Vinegar 750 ML",
+      "category": "Sauce",
+      "unit": "Bottle",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Red Chilli Sauce 5 Ltr",
+      "category": "Sauce",
+      "unit": "Can",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Green Chilli Sauce 5 Ltr",
+      "category": "Sauce",
+      "unit": "Can",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tomato Sauce 5 Ltr",
+      "category": "Sauce",
+      "unit": "Can",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Schezwan Sauce",
+      "category": "Sauce",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tandoori Mayo",
+      "category": "Sauce",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Chilli Garlic Sauce",
+      "category": "Sauce",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Rice",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Urad Dal",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Toor Dal",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Chana Dal",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Moong Dal",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sugar",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Salt",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Jaggery",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Rava",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Maida",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Corn Flour",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Rice Flour",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Besan",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tamarind",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Groundnut Oil",
+      "category": "Grocery",
+      "unit": "Ltr",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sunflower Oil",
+      "category": "Grocery",
+      "unit": "Ltr",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Ghee",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mustard Seeds",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cumin Seeds",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Coriander Powder",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Turmeric Powder",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Red Chilli Powder",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Black Pepper",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Garam Masala",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sambar Powder",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Rasam Powder",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Pav Bhaji Masala",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Kitchen King Masala",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Chaat Masala",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Asafoetida (Hing)",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 1.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Curry Leaves",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Kasuri Methi",
+      "category": "Masala",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Milk",
+      "category": "Dairy",
+      "unit": "Ltr",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Curd",
+      "category": "Dairy",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Butter",
+      "category": "Dairy",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paneer",
+      "category": "Dairy",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cheese Slice",
+      "category": "Dairy",
+      "unit": "Pack",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cheese Block",
+      "category": "Dairy",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mozzarella Cheese",
+      "category": "Dairy",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Fresh Cream",
+      "category": "Dairy",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Buttermilk",
+      "category": "Dairy",
+      "unit": "Ltr",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Potato",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Onion",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tomato",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 40.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Green Chilli",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Ginger",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Garlic",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Coriander",
+      "category": "Vegetable",
+      "unit": "Bundle",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Lemon",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Capsicum",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Carrot",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cabbage",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Parcel Box Small",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 100.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Parcel Box Medium",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 100.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Parcel Box Large",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Bag Small",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Bag Medium",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Bag Large",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 100.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Carry Bag Small",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Carry Bag Medium",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Carry Bag Large",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 100.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Cup 100ml",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Cup 200ml",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paper Glass",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tissue Paper",
+      "category": "Packing",
+      "unit": "Pkt",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Aluminium Foil",
+      "category": "Packing",
+      "unit": "Roll",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cling Film",
+      "category": "Packing",
+      "unit": "Roll",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Butter Paper",
+      "category": "Packing",
+      "unit": "Pkt",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Plastic Spoon",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 500.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Plastic Fork",
+      "category": "Packing",
+      "unit": "Pcs",
+      "min_stock": 200.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tooth Pick",
+      "category": "Packing",
+      "unit": "Box",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Garbage Bag",
+      "category": "Packing",
+      "unit": "Pkt",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Dish Wash Liquid",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Floor Cleaner",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Hand Wash",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Glass Cleaner",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Toilet Cleaner",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Phenyl",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Bleaching Powder",
+      "category": "Cleaning",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Detergent Powder",
+      "category": "Cleaning",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Liquid Soap",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Scrub Pad",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Steel Scrubber",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cleaning Brush",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mop Head",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mop Stick",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Broom",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Wiper",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Dustbin Bag",
+      "category": "Cleaning",
+      "unit": "Pkt",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cleaning Cloth",
+      "category": "Cleaning",
+      "unit": "Pcs",
+      "min_stock": 30.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sanitizer",
+      "category": "Cleaning",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tea Powder",
+      "category": "Beverage",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Coffee Powder",
+      "category": "Beverage",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sugar Syrup",
+      "category": "Beverage",
+      "unit": "Ltr",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Rose Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Kesar Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Black Currant Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Guava Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Blue Curacao Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mint Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Orange Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Butter Scotch Syrup",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 3.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Water Bottle",
+      "category": "Beverage",
+      "unit": "Pcs",
+      "min_stock": 48.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Soda",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Thumbs Up Tin",
+      "category": "Beverage",
+      "unit": "Tin",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Coca Cola Tin",
+      "category": "Beverage",
+      "unit": "Tin",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Fanta Tin",
+      "category": "Beverage",
+      "unit": "Tin",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sprite Tin",
+      "category": "Beverage",
+      "unit": "Tin",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Maaza",
+      "category": "Beverage",
+      "unit": "Bottle",
+      "min_stock": 24.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Pizza Base",
+      "category": "Bakery",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Burger Bun",
+      "category": "Bakery",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sandwich Bread",
+      "category": "Bakery",
+      "unit": "Loaf",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Garlic Bread",
+      "category": "Bakery",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Hot Dog Bun",
+      "category": "Bakery",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Pav",
+      "category": "Bakery",
+      "unit": "Pcs",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Idli Rice",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Dosa Rice",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 50.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Urad Gota",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Poha",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Avalakki",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Semolina (Rava)",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 25.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sabudana",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Tamarind Paste",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Coconut Powder",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Roasted Chana Dal",
+      "category": "Grocery",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Fresh Coconut",
+      "category": "Vegetable",
+      "unit": "Pcs",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Green Coriander",
+      "category": "Vegetable",
+      "unit": "Bundle",
+      "min_stock": 20.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Spring Onion",
+      "category": "Vegetable",
+      "unit": "Bundle",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Beans",
+      "category": "Vegetable",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Sweet Corn",
+      "category": "Frozen",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Baby Corn",
+      "category": "Frozen",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Mushroom",
+      "category": "Frozen",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Paneer Cubes",
+      "category": "Frozen",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "French Fries",
+      "category": "Frozen",
+      "unit": "Kg",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Cashew",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Almond",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Raisin",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Pista",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Walnut",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 2.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "Dates",
+      "category": "Dry Fruits",
+      "unit": "Kg",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "RICE",
+      "category": "GROCERY",
+      "unit": "KG",
+      "min_stock": 10.0,
+      "opening_stock": 0.0
+    },
+    {
+      "name": "TEST ITEM",
+      "category": "TEST ITEM",
+      "unit": "KG",
+      "min_stock": 5.0,
+      "opening_stock": 0.0
+    }
+  ],
+  "stock_in": [
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 10.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Soy Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.87477197917",
+      "item": "Dates",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 10.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Soy Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.87477197917",
+      "item": "Dates",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 10.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Soy Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.87477197917",
+      "item": "Dates",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 10.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Soy Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.87477197917",
+      "item": "Dates",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 10.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Soy Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46207.87477197917",
+      "item": "Dates",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock In"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    },
+    {
+      "date": "46209.0",
+      "item": "Red Chilli Sauce 750 ML",
+      "qty": 5.0,
+      "unit": "Bottle",
+      "remark": "VIJAY"
+    }
+  ],
+  "stock_out": [
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46177.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46177.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46177.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46177.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46207.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46177.0",
+      "item": "Toor Dal",
+      "qty": 2.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "Kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": "46210.0",
+      "item": "Toor Dal",
+      "qty": 1.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    },
+    {
+      "date": null,
+      "item": "Toor Dal",
+      "qty": 3.0,
+      "unit": "kg",
+      "remark": "Excel Migration Stock Out"
+    }
+  ]
+}
