@@ -21,6 +21,7 @@ import { ProductItem } from '../types';
 export const LiveStockScreen: React.FC = () => {
   const { role } = useAuth();
   const { width } = useWindowDimensions();
+  const isExtraWide = width >= 1600;
   const isLargeDesktop = width >= 1200;
   const isDesktop = width >= 768;
 
@@ -86,7 +87,7 @@ export const LiveStockScreen: React.FC = () => {
     p => p.current_stock <= p.minimum_threshold || p.status === 'LOW STOCK' || p.status === 'OUT OF STOCK'
   ).length;
 
-  const numCols = isLargeDesktop ? 3 : isDesktop ? 2 : 1;
+  const numCols = isExtraWide ? 4 : isLargeDesktop ? 3 : isDesktop ? 2 : 1;
 
   const renderProductItem = ({ item }: { item: ProductItem }) => {
     const stockRatio =
@@ -101,6 +102,7 @@ export const LiveStockScreen: React.FC = () => {
           styles.card,
           isDesktop && styles.cardDesktop,
           isLargeDesktop && styles.cardLargeDesktop,
+          isExtraWide && styles.cardExtraWide,
           isLow && styles.cardLow,
         ]}
         onPress={() => setSelectedDetailItem(item)}
@@ -399,6 +401,9 @@ const styles = StyleSheet.create({
   },
   cardLargeDesktop: {
     maxWidth: '32.5%',
+  },
+  cardExtraWide: {
+    maxWidth: '24.2%',
   },
   cardLow: { borderColor: 'rgba(239, 68, 68, 0.4)', backgroundColor: '#1a1016' },
   cardMain: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

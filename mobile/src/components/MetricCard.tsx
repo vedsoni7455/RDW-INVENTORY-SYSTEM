@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 
 interface MetricCardProps {
   title: string;
@@ -18,8 +18,12 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   trend,
   subtitle,
 }) => {
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 1024;
+  const isMobile = width < 600;
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isDesktop && styles.cardDesktop, isMobile && styles.cardMobile]}>
       {/* Top Ambient Glow Line */}
       <View style={[styles.glowBar, { backgroundColor: color }]} />
 
@@ -50,7 +54,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minWidth: '45%',
+    minWidth: 220,
     backgroundColor: '#101827',
     borderRadius: 16,
     padding: 16,
@@ -64,6 +68,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 10,
     elevation: 4,
+  },
+  cardDesktop: {
+    minWidth: 200,
+  },
+  cardMobile: {
+    minWidth: '46%',
+    margin: 4,
+    padding: 12,
   },
   glowBar: {
     position: 'absolute',
@@ -79,29 +91,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   iconWrapper: {
-    width: 42,
-    height: 42,
+    width: 40,
+    height: 40,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
   },
   iconText: {
-    fontSize: 20,
+    fontSize: 18,
   },
   trendBadge: {
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 3,
     borderRadius: 8,
     borderWidth: 1,
   },
   trendText: {
     fontSize: 10,
     fontWeight: '900',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
   valueText: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
     color: '#f8fafc',
     letterSpacing: 0.5,
@@ -112,10 +124,10 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     textTransform: 'uppercase',
     marginTop: 4,
-    letterSpacing: 0.6,
+    letterSpacing: 0.5,
   },
   subtitleText: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#64748b',
     marginTop: 2,
     fontWeight: '600',

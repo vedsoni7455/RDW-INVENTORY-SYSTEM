@@ -25,7 +25,10 @@ import { ProductItem } from '../types';
 export const ItemMasterScreen: React.FC = () => {
   const { role } = useAuth();
   const { width } = useWindowDimensions();
+  const isExtraWide = width >= 1600;
+  const isLargeDesktop = width >= 1200;
   const isDesktop = width >= 768;
+  const numCols = isExtraWide ? 4 : isLargeDesktop ? 3 : isDesktop ? 2 : 1;
 
   const isOwnerOrManager = role === 'owner' || role === 'manager';
 
@@ -343,6 +346,8 @@ export const ItemMasterScreen: React.FC = () => {
         </View>
 
         <FlatList
+          key={numCols}
+          numColumns={numCols}
           data={filteredProducts}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContent}
