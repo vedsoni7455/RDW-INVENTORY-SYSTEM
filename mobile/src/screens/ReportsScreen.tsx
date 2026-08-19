@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { Header } from '../components/Header';
 import { useAuth } from '../context/AuthContext';
-import { exportReportCSV, API_BASE_URL } from '../services/api';
+import { fetchProducts, fetchTransactions } from '../services/api';
 import { jsPDF } from 'jspdf';
 
 export const ReportsScreen: React.FC = () => {
@@ -26,172 +26,203 @@ export const ReportsScreen: React.FC = () => {
     setDownloading(true);
     try {
       let dataList: any[] = [];
-      let columns: string[] = [];
-      let rows: any[][] = [];
-      let title = '';
+      let reportTitle = '';
 
       if (reportType === 'livestock' || reportType === 'lowstock') {
-        const res = await fetch(`${API_BASE_URL}/products`, {
-          headers: { 'x-user-role': role },
-        });
-        const json = await res.json();
-        let list = json.data || [];
+        const products = await fetchProducts(role);
         if (reportType === 'lowstock') {
-          list = list.filter((p: any) => Number(p.total_stock) <= Number(p.minimum_threshold));
+          dataList = products.filter(p => Number(p.total_stock) <= Number(p.minimum_threshold));
+          reportTitle = 'Low Stock Restock Orders Report';
+        } else {
+          dataList = products;
+          reportTitle = 'Live Stock Summary Report';
         }
-        dataList = list;
-        title = reportType === 'livestock' ? 'Live Stock Status Report' : 'Low Stock Reorder Report';
-        columns = ['SKU', 'Item Name', 'Category', 'Current Stock', 'Min Threshold', 'Unit', 'Status'];
-        rows = dataList.map(item => {
-          const isLow = Number(item.total_stock) <= Number(item.minimum_threshold);
-          return [
-            item.sku || 'N/A',
-            item.name,
-            item.category,
-            item.total_stock,
-            item.minimum_threshold,
-            item.unit,
-            Number(item.total_stock) <= 0 ? 'OUT OF STOCK' : isLow ? 'LOW STOCK' : 'OK',
-          ];
-        });
       } else {
-        const txType = reportType === 'stockin' ? 'IN' : 'OUT';
-        const res = await fetch(`${API_BASE_URL}/transactions?limit=1000`, {
-          headers: { 'x-user-role': role },
-        });
-        const json = await res.json();
-        let list = json.data || [];
-        list = list.filter((t: any) => t.change_type === txType);
-        dataList = list;
-        title = reportType === 'stockin' ? 'Stock In Deliveries Log' : 'Stock Out Usage Log';
-        columns = ['Date', 'Item Name', 'Category', 'Quantity', 'Unit', 'Remark', 'Logger'];
-        rows = dataList.map(t => [
-          new Date(t.created_at).toLocaleString(),
-          t.product?.name || 'N/A',
-          t.product?.category || 'N/A',
-          t.quantity,
-          t.unit,
-          t.remark || 'N/A',
-          t.created_by_name || 'Staff',
-        ]);
+        const res = await fetchTransactions(role, 200);
+        if (res.success && res.data) {
+          const typeFilter = reportType === 'stockin' ? 'IN' : 'OUT';
+          dataList = res.data.filter((t: any) => t.change_type === typeFilter);
+        }
+        reportTitle = reportType === 'stockin' ? 'Stock In Refills Log Report' : 'Stock Out Usage Log Report';
       }
 
-      if (Platform.OS === 'web') {
-        const doc = new jsPDF();
+      const doc = new jsPDF();
+      doc.setFont('helvetica');
 
-        // Brand Header
-        doc.setFillColor(6, 9, 17); // Dark theme color #060911
-        doc.rect(0, 0, 210, 40, 'F');
+      // Title Banner
+      doc.setFillColor(16, 24, 39);
+      doc.rect(0, 0, 210, 40, 'F');
 
-        doc.setTextColor(0, 242, 254); // Cyan color
-        doc.setFontSize(22);
+      doc.setTextColor(0, 242, 254);
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text('RDW RESTAURANT', 14, 18);
+
+      doc.setTextColor(248, 250, 252);
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'normal');
+      doc.text(reportTitle.toUpperCase(), 14, 28);
+
+      // Metadata Block
+      doc.setTextColor(71, 85, 105);
+      doc.setFontSize(9);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 48);
+      doc.text(`Role: ${role.toUpperCase()}`, 140, 48);
+      doc.text(`Total Records: ${dataList.length}`, 140, 53);
+
+      doc.setDrawColor(226, 232, 240);
+      doc.line(14, 57, 196, 57);
+
+      let y = 66;
+
+      if (reportType === 'livestock' || reportType === 'lowstock') {
+        // Table Header
+        doc.setFillColor(241, 245, 249);
+        doc.rect(14, y - 6, 182, 8, 'F');
+        doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        doc.text('RDW RESTAURANT INVENTORY', 15, 20);
-
-        doc.setTextColor(255, 255, 255);
         doc.setFontSize(10);
+        doc.text('SKU', 18, y - 1);
+        doc.text('Item Name', 45, y - 1);
+        doc.text('Category', 110, y - 1);
+        doc.text('Current Stock', 150, y - 1);
+        doc.text('Min Limit', 180, y - 1);
+
+        y += 8;
         doc.setFont('helvetica', 'normal');
-        doc.text('Real-time Stock Management & Analytics Report', 15, 30);
 
-        // Date printed
-        doc.setTextColor(148, 163, 184); // Gray
-        doc.setFontSize(9);
-        doc.text(`Printed: ${new Date().toLocaleString()}`, 145, 30);
-
-        // Document Title
-        doc.setTextColor(6, 9, 17);
-        doc.setFontSize(16);
-        doc.setFont('helvetica', 'bold');
-        doc.text(title, 15, 55);
-
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(100, 116, 139);
-        doc.text(`Total Records: ${rows.length}`, 15, 62);
-
-        // Draw Table
-        let startY = 70;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
-        doc.setTextColor(255, 255, 255);
-
-        // Header row
-        doc.setFillColor(16, 24, 39); // Gray-900 style
-        doc.rect(15, startY, 180, 8, 'F');
-
-        const colWidths = [18, 50, 22, 22, 22, 16, 30]; // livestock columns spacing
-        const txColWidths = [38, 42, 22, 16, 14, 33, 15]; // transactions columns spacing
-        const widths = reportType === 'livestock' || reportType === 'lowstock' ? colWidths : txColWidths;
-
-        let currentX = 15;
-        columns.forEach((col, idx) => {
-          doc.text(col, currentX + 2, startY + 6);
-          currentX += widths[idx];
-        });
-
-        startY += 8;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-
-        rows.forEach((row, rIdx) => {
-          // Check page break
-          if (startY > 275) {
+        for (const item of dataList) {
+          if (y > 275) {
             doc.addPage();
-            startY = 20;
-            // Draw headers on new page
+            // Header for new page
             doc.setFillColor(16, 24, 39);
-            doc.rect(15, startY, 180, 8, 'F');
+            doc.rect(0, 0, 210, 20, 'F');
+            doc.setTextColor(0, 242, 254);
+            doc.setFontSize(12);
+            doc.text('RDW RESTAURANT INVENTORY REPORT (CONTINUED)', 14, 13);
+            y = 35;
+
+            doc.setFillColor(241, 245, 249);
+            doc.rect(14, y - 6, 182, 8, 'F');
+            doc.setTextColor(15, 23, 42);
             doc.setFont('helvetica', 'bold');
-            doc.setTextColor(255, 255, 255);
-            let pageX = 15;
-            columns.forEach((col, idx) => {
-              doc.text(col, pageX + 2, startY + 6);
-              pageX += widths[idx];
-            });
-            startY += 8;
+            doc.setFontSize(10);
+            doc.text('SKU', 18, y - 1);
+            doc.text('Item Name', 45, y - 1);
+            doc.text('Category', 110, y - 1);
+            doc.text('Current Stock', 150, y - 1);
+            doc.text('Min Limit', 180, y - 1);
+            y += 8;
             doc.setFont('helvetica', 'normal');
           }
 
-          // Draw alternate row colors
-          if (rIdx % 2 === 1) {
-            doc.setFillColor(248, 250, 252);
-            doc.rect(15, startY, 180, 7, 'F');
+          if (Math.floor(y / 7) % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(14, y - 5, 182, 6, 'F');
           }
 
-          let rowX = 15;
-          row.forEach((val, idx) => {
-            let strVal = String(val);
-            if (strVal.length > 25) strVal = strVal.substring(0, 22) + '...';
+          doc.setTextColor(51, 65, 85);
+          doc.text(item.sku || 'N/A', 18, y - 1);
 
-            // Text color highlighting for warnings
-            if (idx === 6 && (strVal === 'LOW STOCK' || strVal === 'OUT OF STOCK')) {
-              doc.setTextColor(239, 68, 68); // Red
-              doc.setFont('helvetica', 'bold');
-            } else {
-              doc.setTextColor(51, 65, 85);
-              doc.setFont('helvetica', 'normal');
-            }
+          const displayName = item.name.length > 35 ? item.name.substring(0, 32) + '...' : item.name;
+          doc.text(displayName, 45, y - 1);
+          doc.text(item.category || 'General', 110, y - 1);
+          doc.text(`${item.total_stock} ${item.unit}`, 150, y - 1);
+          doc.text(`${item.minimum_threshold} ${item.unit}`, 180, y - 1);
 
-            doc.text(strVal, rowX + 2, startY + 5);
-            rowX += widths[idx];
-          });
+          doc.setDrawColor(241, 245, 249);
+          doc.line(14, y + 1, 196, y + 1);
 
-          // Border line below row
-          doc.setDrawColor(226, 232, 240);
-          doc.line(15, startY + 7, 195, startY + 7);
+          y += 7;
+        }
+      } else {
+        // Transactions Header
+        doc.setFillColor(241, 245, 249);
+        doc.rect(14, y - 6, 182, 8, 'F');
+        doc.setTextColor(15, 23, 42);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text('Date', 18, y - 1);
+        doc.text('Item Name', 45, y - 1);
+        doc.text('Qty Transacted', 110, y - 1);
+        doc.text('Logged By', 145, y - 1);
+        doc.text('Remark / Invoice', 172, y - 1);
 
-          startY += 7;
-        });
+        y += 8;
+        doc.setFont('helvetica', 'normal');
 
+        for (const tx of dataList) {
+          if (y > 275) {
+            doc.addPage();
+            doc.setFillColor(16, 24, 39);
+            doc.rect(0, 0, 210, 20, 'F');
+            doc.setTextColor(0, 242, 254);
+            doc.setFontSize(12);
+            doc.text('RDW RESTAURANT INVENTORY REPORT (CONTINUED)', 14, 13);
+            y = 35;
+
+            doc.setFillColor(241, 245, 249);
+            doc.rect(14, y - 6, 182, 8, 'F');
+            doc.setTextColor(15, 23, 42);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Date', 18, y - 1);
+            doc.text('Item Name', 45, y - 1);
+            doc.text('Qty Transacted', 110, y - 1);
+            doc.text('Logged By', 145, y - 1);
+            doc.text('Remark / Invoice', 172, y - 1);
+            y += 8;
+            doc.setFont('helvetica', 'normal');
+          }
+
+          if (Math.floor(y / 7) % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(14, y - 5, 182, 6, 'F');
+          }
+
+          doc.setTextColor(51, 65, 85);
+          const dateStr = new Date(tx.created_at).toLocaleDateString();
+          doc.text(dateStr, 18, y - 1);
+
+          const itemName = tx.product?.name || 'Deleted SKU';
+          const truncatedItem = itemName.length > 30 ? itemName.substring(0, 27) + '...' : itemName;
+          doc.text(truncatedItem, 45, y - 1);
+
+          doc.text(`${tx.quantity} ${tx.unit}`, 110, y - 1);
+          doc.text(tx.created_by_name || 'System', 145, y - 1);
+
+          const remarkText = tx.remark || 'N/A';
+          const truncatedRemark = remarkText.length > 15 ? remarkText.substring(0, 12) + '...' : remarkText;
+          doc.text(truncatedRemark, 172, y - 1);
+
+          doc.setDrawColor(241, 245, 249);
+          doc.line(14, y + 1, 196, y + 1);
+
+          y += 7;
+        }
+      }
+
+      const pageCount = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`Page ${i} of ${pageCount}`, 180, 287);
+        doc.text('CONFIDENTIAL - RDW Restaurant System Auto-Generated Report', 14, 287);
+      }
+
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
         doc.save(`rdw_inventory_${reportType}_${Date.now()}.pdf`);
         Alert.alert('PDF Downloaded ✅', `Downloaded ${reportType.toUpperCase()} PDF report successfully.`);
       } else {
-        // Native fallback
-        Alert.alert('Export Generated ✅', `PDF export for ${reportType.toUpperCase()} generated.`);
+        Alert.alert(
+          'Export Generated ✅',
+          `Report "${reportTitle}" generated successfully as PDF.`
+        );
       }
     } catch (err: any) {
       console.error(err);
-      Alert.alert('PDF Export Failed', err.message || 'An error occurred during PDF generation.');
+      Alert.alert('Export Failed ❌', `Could not generate PDF: ${err.message}`);
     } finally {
       setDownloading(false);
     }
@@ -230,7 +261,7 @@ export const ReportsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="REPORTS & EXPORTS" subtitle="Audit Logs, Live Stock & Low Stock PDF Reports" />
+      <Header title="REPORTS & EXPORTS" subtitle="Audit Logs, Live Stock & Low Stock PDF Exports" />
 
       <ScrollView
         style={styles.content}
@@ -270,7 +301,7 @@ export const ReportsScreen: React.FC = () => {
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Text style={styles.infoTitle}>Selected Report Specification:</Text>
-              <Text style={styles.infoFormatBadge}>FORMAT: PDF</Text>
+              <Text style={styles.infoFormatBadge}>FORMAT: ADOBE PDF</Text>
             </View>
             <Text style={styles.infoDesc}>
               {reportConfigs.find(c => c.id === reportType)?.desc}
@@ -284,7 +315,7 @@ export const ReportsScreen: React.FC = () => {
             activeOpacity={0.8}
           >
             <Text style={styles.exportBtnText}>
-              {downloading ? 'GENERATING PDF DATA...' : `📥 DOWNLOAD ${reportType.toUpperCase()} PDF`}
+              {downloading ? 'GENERATING PDF REPORT...' : `📥 DOWNLOAD ${reportType.toUpperCase()} PDF`}
             </Text>
           </TouchableOpacity>
           <View style={{ height: 30 }} />

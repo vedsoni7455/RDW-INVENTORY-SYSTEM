@@ -161,3 +161,23 @@ export async function exportReportCSV(
     return { success: false, error: err.message };
   }
 }
+
+export async function fetchTransactions(
+  role: string,
+  limit = 200,
+  productId?: string
+): Promise<{ success: boolean; data?: any[]; error?: string }> {
+  try {
+    let url = `${API_BASE_URL}/transactions?limit=${limit}`;
+    if (productId) url += `&productId=${productId}`;
+    const res = await fetch(url, {
+      headers: {
+        'x-user-role': role,
+      },
+    });
+    const json = await res.json();
+    return { success: json.success, data: json.data };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}
