@@ -45,6 +45,7 @@ export const ItemMasterScreen: React.FC = () => {
   const [addMinStock, setAddMinStock] = useState('5');
   const [addOpeningStock, setAddOpeningStock] = useState('10');
   const [addSku, setAddSku] = useState('');
+  const [showAddCatDropdown, setShowAddCatDropdown] = useState(false);
 
   // Edit Item State
   const [editingItem, setEditingItem] = useState<ProductItem | null>(null);
@@ -53,6 +54,7 @@ export const ItemMasterScreen: React.FC = () => {
   const [editUnit, setEditUnit] = useState('');
   const [editMinStock, setEditMinStock] = useState('');
   const [editTotalStock, setEditTotalStock] = useState('');
+  const [showEditCatDropdown, setShowEditCatDropdown] = useState(false);
 
   const categories = ['ALL', 'Grocery', 'Sauce', 'Masala', 'Dairy', 'Vegetable', 'Bakery', 'Packaging', 'Non-Veg', 'Beverages'];
   const units = ['Kg', 'Bottle', 'Can', 'Ltr', 'Pack', 'Box', 'Pcs'];
@@ -247,13 +249,48 @@ export const ItemMasterScreen: React.FC = () => {
               <View style={styles.row}>
                 <View style={styles.col}>
                   <Text style={styles.label}>Category</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Grocery, Sauce, Masala..."
-                    placeholderTextColor="#64748b"
-                    value={addCategory}
-                    onChangeText={setAddCategory}
-                  />
+                  <TouchableOpacity
+                    style={styles.dropdownTrigger}
+                    onPress={() => setShowAddCatDropdown(!showAddCatDropdown)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.dropdownTriggerText}>
+                      {addCategory || 'Select Category'}
+                    </Text>
+                    <Text style={styles.dropdownArrow}>{showAddCatDropdown ? '▲' : '▼'}</Text>
+                  </TouchableOpacity>
+
+                  {showAddCatDropdown && (
+                    <View style={styles.dropdownList}>
+                      <ScrollView style={{ maxHeight: 180 }} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
+                        {categories
+                          .filter(c => c !== 'ALL')
+                          .map(cat => (
+                            <TouchableOpacity
+                              key={cat}
+                              style={[
+                                styles.dropdownItem,
+                                addCategory === cat && styles.dropdownItemActive,
+                              ]}
+                              onPress={() => {
+                                setAddCategory(cat);
+                                setShowAddCatDropdown(false);
+                              }}
+                              activeOpacity={0.7}
+                            >
+                              <Text
+                                style={[
+                                  styles.dropdownItemText,
+                                  addCategory === cat && styles.dropdownItemTextActive,
+                                ]}
+                              >
+                                {cat}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                      </ScrollView>
+                    </View>
+                  )}
                 </View>
 
                 <View style={styles.col}>
@@ -443,11 +480,48 @@ export const ItemMasterScreen: React.FC = () => {
             <View style={styles.row}>
               <View style={styles.col}>
                 <Text style={styles.label}>Category</Text>
-                <TextInput
-                  style={styles.input}
-                  value={editCategory}
-                  onChangeText={setEditCategory}
-                />
+                <TouchableOpacity
+                  style={styles.dropdownTrigger}
+                  onPress={() => setShowEditCatDropdown(!showEditCatDropdown)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.dropdownTriggerText}>
+                    {editCategory || 'Select Category'}
+                  </Text>
+                  <Text style={styles.dropdownArrow}>{showEditCatDropdown ? '▲' : '▼'}</Text>
+                </TouchableOpacity>
+
+                {showEditCatDropdown && (
+                  <View style={styles.dropdownList}>
+                    <ScrollView style={{ maxHeight: 180 }} nestedScrollEnabled={true} showsVerticalScrollIndicator={true}>
+                      {categories
+                        .filter(c => c !== 'ALL')
+                        .map(cat => (
+                          <TouchableOpacity
+                            key={cat}
+                            style={[
+                              styles.dropdownItem,
+                              editCategory === cat && styles.dropdownItemActive,
+                            ]}
+                            onPress={() => {
+                              setEditCategory(cat);
+                              setShowEditCatDropdown(false);
+                            }}
+                            activeOpacity={0.7}
+                          >
+                            <Text
+                              style={[
+                                styles.dropdownItemText,
+                                editCategory === cat && styles.dropdownItemTextActive,
+                              ]}
+                            >
+                              {cat}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                  </View>
+                )}
               </View>
 
               <View style={styles.col}>
@@ -731,4 +805,52 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   saveText: { color: '#090d16', fontWeight: '900', fontSize: 12, letterSpacing: 0.5 },
+  dropdownTrigger: {
+    backgroundColor: '#060911',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#1e293b',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownTriggerText: {
+    color: '#f8fafc',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  dropdownArrow: {
+    color: '#64748b',
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  dropdownList: {
+    backgroundColor: '#060911',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#1e293b',
+    marginTop: 4,
+    maxHeight: 180,
+    overflow: 'hidden',
+  },
+  dropdownItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#101827',
+  },
+  dropdownItemActive: {
+    backgroundColor: '#13233c',
+  },
+  dropdownItemText: {
+    color: '#cbd5e1',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  dropdownItemTextActive: {
+    color: '#00f2fe',
+    fontWeight: '800',
+  },
 });
