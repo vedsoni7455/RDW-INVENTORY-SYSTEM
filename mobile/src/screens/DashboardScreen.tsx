@@ -239,61 +239,35 @@ export const DashboardScreen: React.FC = ({ navigation }: any) => {
               </View>
 
               <View style={styles.barGroup}>
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 65, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 35, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Mon</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 95, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 55, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Tue</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 45, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 75, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Wed</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 110, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 60, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Thu</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 130, backgroundColor: '#00f2fe' }]} />
-                    <View style={[styles.bar, { height: 95, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Fri</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 85, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 40, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Sat</Text>
-                </View>
-
-                <View style={styles.barItem}>
-                  <View style={styles.doubleBar}>
-                    <View style={[styles.bar, { height: 50, backgroundColor: '#10b981' }]} />
-                    <View style={[styles.bar, { height: 30, backgroundColor: '#f59e0b' }]} />
-                  </View>
-                  <Text style={styles.barLabel}>Sun</Text>
-                </View>
+                {(() => {
+                  const weeklyData = summary?.weeklyMovements || [
+                    { day: 'Mon', stockIn: 65, stockOut: 35 },
+                    { day: 'Tue', stockIn: 95, stockOut: 55 },
+                    { day: 'Wed', stockIn: 45, stockOut: 75 },
+                    { day: 'Thu', stockIn: 110, stockOut: 60 },
+                    { day: 'Fri', stockIn: 130, stockOut: 95 },
+                    { day: 'Sat', stockIn: 85, stockOut: 40 },
+                    { day: 'Sun', stockIn: 50, stockOut: 30 },
+                  ];
+                  
+                  const maxVal = Math.max(...weeklyData.map(d => Math.max(d.stockIn, d.stockOut)), 10);
+                  
+                  return weeklyData.map((d, index) => {
+                    const inHeight = Math.round((d.stockIn / maxVal) * 110) || 2;
+                    const outHeight = Math.round((d.stockOut / maxVal) * 110) || 2;
+                    const inColor = d.day === 'Fri' ? '#00f2fe' : '#10b981';
+                    
+                    return (
+                      <View key={`${d.day}-${index}`} style={styles.barItem}>
+                        <View style={styles.doubleBar}>
+                          <View style={[styles.bar, { height: inHeight, backgroundColor: inColor }]} />
+                          <View style={[styles.bar, { height: outHeight, backgroundColor: '#f59e0b' }]} />
+                        </View>
+                        <Text style={styles.barLabel}>{d.day}</Text>
+                      </View>
+                    );
+                  });
+                })()}
               </View>
 
               <View style={styles.legendRow}>

@@ -113,6 +113,16 @@ for idx, (name, details) in enumerate(products_map.items(), 1):
     op_s = details['opening_stock']
     sql_lines.append(f"INSERT INTO products (id, sku, name, category, unit, opening_stock, total_stock, minimum_threshold) VALUES ('{pid}', '{sku}', '{pname}', '{cat}', '{unit}', {op_s}, {op_s}, {min_s}) ON CONFLICT (name) DO NOTHING;")
 
+import datetime
+
+def excel_date_to_iso(excel_serial):
+    try:
+        val = float(excel_serial)
+        dt = datetime.datetime(1899, 12, 30) + datetime.timedelta(days=val)
+        return dt.isoformat() + 'Z'
+    except Exception as e:
+        return datetime.datetime.utcnow().isoformat() + 'Z'
+
 # Seed Stock Transactions
 for item in stock_in_list:
     pname = item['item']
@@ -121,7 +131,8 @@ for item in stock_in_list:
         qty = item['qty']
         unit = item['unit'].replace("'", "''")
         remark = item['remark'].replace("'", "''")
-        sql_lines.append(f"INSERT INTO stock_transactions (product_id, change_type, quantity, unit, remark, created_by_name) VALUES ('{pid}', 'IN', {qty}, '{unit}', '{remark}', 'System Migration');")
+        created_at = excel_date_to_iso(item['date'])
+        sql_lines.append(f"INSERT INTO stock_transactions (product_id, change_type, quantity, unit, remark, created_by_name, created_at) VALUES ('{pid}', 'IN', {qty}, '{unit}', '{remark}', 'System Migration', '{created_at}');")
 
 for item in stock_out_list:
     pname = item['item']
@@ -130,7 +141,8 @@ for item in stock_out_list:
         qty = item['qty']
         unit = item['unit'].replace("'", "''")
         remark = item['remark'].replace("'", "''")
-        sql_lines.append(f"INSERT INTO stock_transactions (product_id, change_type, quantity, unit, remark, created_by_name) VALUES ('{pid}', 'OUT', {qty}, '{unit}', '{remark}', 'System Migration');")
+        created_at = excel_date_to_iso(item['date'])
+        sql_lines.append(f"INSERT INTO stock_transactions (product_id, change_type, quantity, unit, remark, created_by_name, created_at) VALUES ('{pid}', 'OUT', {qty}, '{unit}', '{remark}', 'System Migration', '{created_at}');")
 
 with open('database/seed_data.sql', 'w', encoding='utf-8') as f:
     f.write('\n'.join(sql_lines))

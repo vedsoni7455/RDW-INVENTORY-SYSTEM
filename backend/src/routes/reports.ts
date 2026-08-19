@@ -47,12 +47,56 @@ router.get('/summary', requireAuth, async (req: AuthenticatedRequest, res: Respo
       products: t.products,
     }));
 
+    // Calculate weekly movements (sums of IN and OUT per day of the week for the 7 days ending at latest transaction date)
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weeklyMovements = [];
+    
+    let referenceDate = new Date();
+    if (txList.length > 0) {
+      const dates = txList.map(t => new Date(t.created_at).getTime()).filter(t => !isNaN(t));
+      if (dates.length > 0) {
+        referenceDate = new Date(Math.max(...dates));
+      }
+    }
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(referenceDate);
+      d.setDate(referenceDate.getDate() - i);
+      const dayName = daysOfWeek[d.getDay()];
+      const dateStr = d.toISOString().split('T')[0];
+      
+      const dayTx = txList.filter(t => {
+        try {
+          const txDate = new Date(t.created_at).toISOString().split('T')[0];
+          return txDate === dateStr;
+        } catch {
+          return false;
+        }
+      });
+      
+      const stockIn = dayTx
+        .filter(t => t.change_type === 'IN')
+        .reduce((sum, t) => sum + Number(t.quantity || 0), 0);
+        
+      const stockOut = dayTx
+        .filter(t => t.change_type === 'OUT')
+        .reduce((sum, t) => sum + Number(t.quantity || 0), 0);
+        
+      weeklyMovements.push({
+        day: dayName,
+        date: dateStr,
+        stockIn,
+        stockOut
+      });
+    }
+
     const summary = {
       totalProducts,
       lowStockCount,
       totalStockInSum,
       totalStockOutSum,
       recentTransactions,
+      weeklyMovements,
     };
 
     res.json({

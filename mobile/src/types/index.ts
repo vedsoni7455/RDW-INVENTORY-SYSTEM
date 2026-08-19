@@ -45,4 +45,10 @@ export interface SummaryData {
   totalStockInSum: number;
   totalStockOutSum: number;
   recentTransactions: StockTransaction[];
+  weeklyMovements?: {
+    day: string;
+    date: string;
+    stockIn: number;
+    stockOut: number;
+  }[];
 }

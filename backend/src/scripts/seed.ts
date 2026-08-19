@@ -67,6 +67,18 @@ async function runSeed() {
 
   console.log(`✅ Products processing complete. Mapped ${Object.keys(nameToIdMap).length} product IDs.`);
 
+function parseExcelDate(excelSerial: any): string {
+  try {
+    const val = Number(excelSerial);
+    if (isNaN(val) || val <= 0) return new Date().toISOString();
+    // Excel base date is 1899-12-30 due to 1900 leap year bug
+    const date = new Date((val - 25569) * 24 * 60 * 60 * 1000);
+    return date.toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
   // 2. Insert Stock IN Transactions
   let inInserted = 0;
   for (const item of stockInList) {
@@ -80,6 +92,7 @@ async function runSeed() {
       unit: item.unit || 'Kg',
       remark: item.remark || 'Excel Seed Stock In',
       created_by_name: 'Excel Import',
+      created_at: parseExcelDate(item.date),
     });
 
     if (!error) inInserted++;
@@ -99,6 +112,7 @@ async function runSeed() {
       unit: item.unit || 'Kg',
       remark: item.remark || 'Excel Seed Stock Out',
       created_by_name: 'Excel Import',
+      created_at: parseExcelDate(item.date),
     });
 
     if (!error) outInserted++;
