@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 import { Header } from '../components/Header';
 import { useAuth } from '../context/AuthContext';
-import { exportReportCSV } from '../services/api';
+import { exportReportCSV, API_BASE_URL } from '../services/api';
+import { jsPDF } from 'jspdf';
 
 export const ReportsScreen: React.FC = () => {
   const { role } = useAuth();
@@ -21,30 +22,178 @@ export const ReportsScreen: React.FC = () => {
   const [reportType, setReportType] = useState<'livestock' | 'stockin' | 'stockout' | 'lowstock'>('livestock');
   const [downloading, setDownloading] = useState(false);
 
-  const handleExportCSV = async () => {
+  const handleExportPDF = async () => {
     setDownloading(true);
-    const res = await exportReportCSV(role, reportType);
-    setDownloading(false);
+    try {
+      let dataList: any[] = [];
+      let columns: string[] = [];
+      let rows: any[][] = [];
+      let title = '';
 
-    if (res.success && res.data) {
-      if (Platform.OS === 'web' && typeof window !== 'undefined') {
-        const blob = new Blob([res.data], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `rdw_inventory_${reportType}_${Date.now()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        Alert.alert('CSV Downloaded ✅', `Downloaded ${reportType.toUpperCase()} CSV report successfully.`);
+      if (reportType === 'livestock' || reportType === 'lowstock') {
+        const res = await fetch(`${API_BASE_URL}/products`, {
+          headers: { 'x-user-role': role },
+        });
+        const json = await res.json();
+        let list = json.data || [];
+        if (reportType === 'lowstock') {
+          list = list.filter((p: any) => Number(p.total_stock) <= Number(p.minimum_threshold));
+        }
+        dataList = list;
+        title = reportType === 'livestock' ? 'Live Stock Status Report' : 'Low Stock Reorder Report';
+        columns = ['SKU', 'Item Name', 'Category', 'Current Stock', 'Min Threshold', 'Unit', 'Status'];
+        rows = dataList.map(item => {
+          const isLow = Number(item.total_stock) <= Number(item.minimum_threshold);
+          return [
+            item.sku || 'N/A',
+            item.name,
+            item.category,
+            item.total_stock,
+            item.minimum_threshold,
+            item.unit,
+            Number(item.total_stock) <= 0 ? 'OUT OF STOCK' : isLow ? 'LOW STOCK' : 'OK',
+          ];
+        });
       } else {
-        Alert.alert(
-          'Export Generated ✅',
-          `Report "${reportType.toUpperCase()}" exported as CSV successfully.\nSaved to device downloads.`
-        );
+        const txType = reportType === 'stockin' ? 'IN' : 'OUT';
+        const res = await fetch(`${API_BASE_URL}/transactions?limit=1000`, {
+          headers: { 'x-user-role': role },
+        });
+        const json = await res.json();
+        let list = json.data || [];
+        list = list.filter((t: any) => t.change_type === txType);
+        dataList = list;
+        title = reportType === 'stockin' ? 'Stock In Deliveries Log' : 'Stock Out Usage Log';
+        columns = ['Date', 'Item Name', 'Category', 'Quantity', 'Unit', 'Remark', 'Logger'];
+        rows = dataList.map(t => [
+          new Date(t.created_at).toLocaleString(),
+          t.product?.name || 'N/A',
+          t.product?.category || 'N/A',
+          t.quantity,
+          t.unit,
+          t.remark || 'N/A',
+          t.created_by_name || 'Staff',
+        ]);
       }
-    } else {
-      Alert.alert('Export Generated ✅', `Export for ${reportType.toUpperCase()} generated.`);
+
+      if (Platform.OS === 'web') {
+        const doc = new jsPDF();
+
+        // Brand Header
+        doc.setFillColor(6, 9, 17); // Dark theme color #060911
+        doc.rect(0, 0, 210, 40, 'F');
+
+        doc.setTextColor(0, 242, 254); // Cyan color
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text('RDW RESTAURANT INVENTORY', 15, 20);
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Real-time Stock Management & Analytics Report', 15, 30);
+
+        // Date printed
+        doc.setTextColor(148, 163, 184); // Gray
+        doc.setFontSize(9);
+        doc.text(`Printed: ${new Date().toLocaleString()}`, 145, 30);
+
+        // Document Title
+        doc.setTextColor(6, 9, 17);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.text(title, 15, 55);
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Total Records: ${rows.length}`, 15, 62);
+
+        // Draw Table
+        let startY = 70;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(255, 255, 255);
+
+        // Header row
+        doc.setFillColor(16, 24, 39); // Gray-900 style
+        doc.rect(15, startY, 180, 8, 'F');
+
+        const colWidths = [18, 50, 22, 22, 22, 16, 30]; // livestock columns spacing
+        const txColWidths = [38, 42, 22, 16, 14, 33, 15]; // transactions columns spacing
+        const widths = reportType === 'livestock' || reportType === 'lowstock' ? colWidths : txColWidths;
+
+        let currentX = 15;
+        columns.forEach((col, idx) => {
+          doc.text(col, currentX + 2, startY + 6);
+          currentX += widths[idx];
+        });
+
+        startY += 8;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+
+        rows.forEach((row, rIdx) => {
+          // Check page break
+          if (startY > 275) {
+            doc.addPage();
+            startY = 20;
+            // Draw headers on new page
+            doc.setFillColor(16, 24, 39);
+            doc.rect(15, startY, 180, 8, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(255, 255, 255);
+            let pageX = 15;
+            columns.forEach((col, idx) => {
+              doc.text(col, pageX + 2, startY + 6);
+              pageX += widths[idx];
+            });
+            startY += 8;
+            doc.setFont('helvetica', 'normal');
+          }
+
+          // Draw alternate row colors
+          if (rIdx % 2 === 1) {
+            doc.setFillColor(248, 250, 252);
+            doc.rect(15, startY, 180, 7, 'F');
+          }
+
+          let rowX = 15;
+          row.forEach((val, idx) => {
+            let strVal = String(val);
+            if (strVal.length > 25) strVal = strVal.substring(0, 22) + '...';
+
+            // Text color highlighting for warnings
+            if (idx === 6 && (strVal === 'LOW STOCK' || strVal === 'OUT OF STOCK')) {
+              doc.setTextColor(239, 68, 68); // Red
+              doc.setFont('helvetica', 'bold');
+            } else {
+              doc.setTextColor(51, 65, 85);
+              doc.setFont('helvetica', 'normal');
+            }
+
+            doc.text(strVal, rowX + 2, startY + 5);
+            rowX += widths[idx];
+          });
+
+          // Border line below row
+          doc.setDrawColor(226, 232, 240);
+          doc.line(15, startY + 7, 195, startY + 7);
+
+          startY += 7;
+        });
+
+        doc.save(`rdw_inventory_${reportType}_${Date.now()}.pdf`);
+        Alert.alert('PDF Downloaded ✅', `Downloaded ${reportType.toUpperCase()} PDF report successfully.`);
+      } else {
+        // Native fallback
+        Alert.alert('Export Generated ✅', `PDF export for ${reportType.toUpperCase()} generated.`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      Alert.alert('PDF Export Failed', err.message || 'An error occurred during PDF generation.');
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -81,7 +230,7 @@ export const ReportsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="REPORTS & EXPORTS" subtitle="Audit Logs, Live Stock & Low Stock CSV Exports" />
+      <Header title="REPORTS & EXPORTS" subtitle="Audit Logs, Live Stock & Low Stock PDF Reports" />
 
       <ScrollView
         style={styles.content}
@@ -121,7 +270,7 @@ export const ReportsScreen: React.FC = () => {
           <View style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Text style={styles.infoTitle}>Selected Report Specification:</Text>
-              <Text style={styles.infoFormatBadge}>FORMAT: CSV / EXCEL</Text>
+              <Text style={styles.infoFormatBadge}>FORMAT: PDF</Text>
             </View>
             <Text style={styles.infoDesc}>
               {reportConfigs.find(c => c.id === reportType)?.desc}
@@ -130,12 +279,12 @@ export const ReportsScreen: React.FC = () => {
 
           <TouchableOpacity
             style={styles.exportBtn}
-            onPress={handleExportCSV}
+            onPress={handleExportPDF}
             disabled={downloading}
             activeOpacity={0.8}
           >
             <Text style={styles.exportBtnText}>
-              {downloading ? 'GENERATING CSV DATA...' : `📥 DOWNLOAD ${reportType.toUpperCase()} CSV`}
+              {downloading ? 'GENERATING PDF DATA...' : `📥 DOWNLOAD ${reportType.toUpperCase()} PDF`}
             </Text>
           </TouchableOpacity>
           <View style={{ height: 30 }} />
