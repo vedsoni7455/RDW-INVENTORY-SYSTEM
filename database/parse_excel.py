@@ -10,7 +10,8 @@ products_map = {}
 stock_in_list = []
 stock_out_list = []
 
-for filename in sorted(glob.glob('*.xlsx')):
+filenames = ['rdw inventory system.xlsx']
+for filename in filenames:
     with zipfile.ZipFile(filename) as z:
         shared_strings = []
         if 'xl/sharedStrings.xml' in z.namelist():

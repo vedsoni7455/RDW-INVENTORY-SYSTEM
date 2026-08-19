@@ -22,6 +22,10 @@ async function runSeed() {
   console.log(`📥 Found ${stockInList.length} Stock IN records.`);
   console.log(`📤 Found ${stockOutList.length} Stock OUT records.`);
 
+  console.log('🧹 Clearing existing database records...');
+  await supabase.from('stock_transactions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+  await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
   // 1. Insert Products
   const nameToIdMap: Record<string, string> = {};
 
