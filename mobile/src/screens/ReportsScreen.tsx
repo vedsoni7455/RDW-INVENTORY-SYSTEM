@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
   responsiveContainer: { maxWidth: 1600, alignSelf: 'center', width: '100%' },
   sectionTitle: { color: '#f8fafc', fontSize: 15, fontWeight: '800', marginBottom: 14 },
   typeGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4, marginBottom: 16 },
-  typeGridDesktop: { flexWrap: 'nowrap' },
+  typeGridDesktop: { flexWrap: 'wrap' },
   typeCard: {
     flex: 1,
-    minWidth: '45%',
+    minWidth: 220,
     backgroundColor: '#101827',
     padding: 16,
     borderRadius: 16,

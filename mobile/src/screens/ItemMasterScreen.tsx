@@ -219,87 +219,107 @@ export const ItemMasterScreen: React.FC = () => {
           </View>
         )}
 
-        {/* Add Item Form */}
-        {isAdding && isOwnerOrManager && (
-          <ScrollView style={styles.formCard} showsVerticalScrollIndicator={false}>
-            <Text style={styles.formTitle}>✨ Define New Restaurant Item</Text>
-
-            <Text style={styles.label}>Item Name *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. Red Chilli Sauce 5 Ltr, Butter..."
-              placeholderTextColor="#64748b"
-              value={addName}
-              onChangeText={setAddName}
-            />
-
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={styles.label}>Category</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Grocery, Sauce, Masala..."
-                  placeholderTextColor="#64748b"
-                  value={addCategory}
-                  onChangeText={setAddCategory}
-                />
+        {/* Add Item Modal */}
+        <Modal
+          visible={isAdding && isOwnerOrManager}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsAdding(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>✨ Define New Restaurant Item</Text>
+                <TouchableOpacity onPress={() => setIsAdding(false)}>
+                  <Text style={styles.closeText}>✖</Text>
+                </TouchableOpacity>
               </View>
 
-              <View style={styles.col}>
-                <Text style={styles.label}>Unit</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Kg, Bottle, Can..."
-                  placeholderTextColor="#64748b"
-                  value={addUnit}
-                  onChangeText={setAddUnit}
-                />
+              <Text style={styles.label}>Item Name *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="e.g. Red Chilli Sauce 5 Ltr, Butter..."
+                placeholderTextColor="#64748b"
+                value={addName}
+                onChangeText={setAddName}
+              />
+
+              <View style={styles.row}>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Category</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Grocery, Sauce, Masala..."
+                    placeholderTextColor="#64748b"
+                    value={addCategory}
+                    onChangeText={setAddCategory}
+                  />
+                </View>
+
+                <View style={styles.col}>
+                  <Text style={styles.label}>Unit</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Kg, Bottle, Can..."
+                    placeholderTextColor="#64748b"
+                    value={addUnit}
+                    onChangeText={setAddUnit}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.row}>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Min Alert Threshold</Text>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={addMinStock}
+                    onChangeText={setAddMinStock}
+                  />
+                </View>
+
+                <View style={styles.col}>
+                  <Text style={styles.label}>Opening Stock</Text>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={addOpeningStock}
+                    onChangeText={setAddOpeningStock}
+                  />
+                </View>
+              </View>
+
+              <Text style={styles.label}>Custom SKU (Optional)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="e.g. SKU-1092"
+                placeholderTextColor="#64748b"
+                value={addSku}
+                onChangeText={setAddSku}
+              />
+
+              <View style={styles.modalBtnRow}>
+                <TouchableOpacity
+                  style={styles.cancelBtn}
+                  onPress={() => setIsAdding(false)}
+                >
+                  <Text style={styles.cancelText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.saveBtn}
+                  onPress={handleCreate}
+                  disabled={loading}
+                >
+                  <Text style={styles.saveText}>
+                    {loading ? 'CREATING...' : 'CREATE & SYNC BACKEND'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={styles.label}>Min Alert Threshold</Text>
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={addMinStock}
-                  onChangeText={setAddMinStock}
-                />
-              </View>
-
-              <View style={styles.col}>
-                <Text style={styles.label}>Opening Stock</Text>
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={addOpeningStock}
-                  onChangeText={setAddOpeningStock}
-                />
-              </View>
-            </View>
-
-            <Text style={styles.label}>Custom SKU (Optional)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. SKU-1092"
-              placeholderTextColor="#64748b"
-              value={addSku}
-              onChangeText={setAddSku}
-            />
-
-            <TouchableOpacity
-              style={styles.submitBtn}
-              onPress={handleCreate}
-              disabled={loading}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.submitText}>
-                {loading ? 'SAVING TO BACKEND...' : 'SAVE & SYNC TO DATABASE'}
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        )}
+          </View>
+        </Modal>
 
         {/* Search Bar */}
         <View style={styles.searchBarContainer}>
@@ -352,7 +372,14 @@ export const ItemMasterScreen: React.FC = () => {
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={styles.itemCard}>
+            <View
+              style={[
+                styles.itemCard,
+                isDesktop && styles.itemCardDesktop,
+                isLargeDesktop && styles.itemCardLargeDesktop,
+                isExtraWide && styles.itemCardExtraWide,
+              ]}
+            >
               <View style={styles.itemMain}>
                 <View style={{ flex: 1, marginRight: 10 }}>
                   <View style={styles.itemNameRow}>
@@ -597,6 +624,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderWidth: 1,
     borderColor: '#1e293b',
+    marginHorizontal: 4,
+  },
+  itemCardDesktop: {
+    flex: 1,
+    maxWidth: '49%',
+  },
+  itemCardLargeDesktop: {
+    maxWidth: '32.5%',
+  },
+  itemCardExtraWide: {
+    maxWidth: '24.2%',
   },
   itemMain: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   itemNameRow: { flexDirection: 'row', alignItems: 'center' },

@@ -336,7 +336,7 @@ export const LiveStockScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#060911' },
-  responsiveContainer: { maxWidth: 1600, alignSelf: 'center', width: '100%' },
+  responsiveContainer: { flex: 1, maxWidth: 1600, alignSelf: 'center', width: '100%' },
   searchBarContainer: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 6 },
   searchInputWrapper: {
     flexDirection: 'row',
