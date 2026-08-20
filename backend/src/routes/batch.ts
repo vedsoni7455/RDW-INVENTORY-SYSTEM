@@ -22,7 +22,7 @@ router.post('/adjustments', requireAuth, requireRole(['owner', 'manager']), asyn
         quantity: Number(item.quantity),
         unit: item.unit,
         remark: item.remark || 'Bulk Batch Adjustment',
-        created_by_id: req.user?.id,
+        created_by: req.user?.id,
         created_by_name: req.user?.user_metadata?.full_name || 'System',
       }));
 

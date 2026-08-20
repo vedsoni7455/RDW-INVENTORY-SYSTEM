@@ -13,6 +13,8 @@ import { Header } from '../components/Header';
 import { useAuth } from '../context/AuthContext';
 import { fetchProducts, fetchTransactions } from '../services/api';
 import { jsPDF } from 'jspdf';
+import { documentDirectory, writeAsStringAsync, EncodingType } from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 
 export const ReportsScreen: React.FC = () => {
   const { role } = useAuth();
@@ -215,10 +217,29 @@ export const ReportsScreen: React.FC = () => {
         doc.save(`rdw_inventory_${reportType}_${Date.now()}.pdf`);
         Alert.alert('PDF Downloaded ✅', `Downloaded ${reportType.toUpperCase()} PDF report successfully.`);
       } else {
-        Alert.alert(
-          'Export Generated ✅',
-          `Report "${reportTitle}" generated successfully as PDF.`
-        );
+        // Generate PDF base64 string
+        const pdfBase64 = doc.output('datauristring').split(',')[1];
+        const filename = `rdw_inventory_${reportType}_${Date.now()}.pdf`;
+        const fileUri = `${documentDirectory}${filename}`;
+
+        // Write the PDF file locally on the mobile device
+        await writeAsStringAsync(fileUri, pdfBase64, {
+          encoding: EncodingType.Base64,
+        });
+
+        // Share the PDF document (allows saving to device files, sharing via email/apps)
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(fileUri, {
+            mimeType: 'application/pdf',
+            dialogTitle: `Export ${reportTitle}`,
+            UTI: 'com.adobe.pdf',
+          });
+        } else {
+          Alert.alert(
+            'Export Generated ✅',
+            `Report "${reportTitle}" generated successfully, but sharing is not supported on this device.`
+          );
+        }
       }
     } catch (err: any) {
       console.error(err);

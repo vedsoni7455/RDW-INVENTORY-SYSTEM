@@ -49,7 +49,7 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =
         quantity: qtyNum,
         unit: unit || 'Kg',
         remark: remark,
-        created_by_id: req.user?.id,
+        created_by: req.user?.id,
         created_by_name: req.user?.user_metadata?.full_name || 'System',
       })
       .select()

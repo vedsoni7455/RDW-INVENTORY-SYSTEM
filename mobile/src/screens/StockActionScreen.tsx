@@ -10,7 +10,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Header } from '../components/Header';
-import { BarcodeScannerModal } from '../components/BarcodeScannerModal';
 import { useAuth } from '../context/AuthContext';
 import { fetchProducts, logStockTransaction } from '../services/api';
 import { ProductItem } from '../types';
@@ -28,7 +27,6 @@ export const StockActionScreen: React.FC = () => {
   const [quantity, setQuantity] = useState('1');
   const [remark, setRemark] = useState('');
   const [loading, setLoading] = useState(false);
-  const [scannerVisible, setScannerVisible] = useState(false);
 
   const categories = ['All', 'Grocery', 'Sauce', 'Masala', 'Dairy', 'Vegetable', 'Bakery', 'Packaging', 'Non-Veg', 'Beverages'];
 
@@ -46,10 +44,6 @@ export const StockActionScreen: React.FC = () => {
   const handleQuickQtyAdd = (amount: number) => {
     const currentNum = parseFloat(quantity) || 0;
     setQuantity(Math.max(1, currentNum + amount).toString());
-  };
-
-  const handleScanItem = (product: ProductItem) => {
-    setSelectedProduct(product);
   };
 
   const handleSubmit = async () => {
@@ -126,7 +120,7 @@ export const StockActionScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.responsiveContainer}>
-          {/* Top Bar: Action Type & Scanner */}
+          {/* Top Bar: Action Type */}
           <View style={styles.topControlRow}>
             {/* Toggle Action Type */}
             <View style={styles.toggleContainer}>
@@ -150,16 +144,6 @@ export const StockActionScreen: React.FC = () => {
                 </Text>
               </TouchableOpacity>
             </View>
-
-            {/* Scanner Button */}
-            <TouchableOpacity
-              style={styles.scannerLaunchBtn}
-              onPress={() => setScannerVisible(true)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.scannerLaunchIcon}>📷</Text>
-              <Text style={styles.scannerLaunchText}>SCAN SKU</Text>
-            </TouchableOpacity>
           </View>
 
           {/* Selected Product Card or Product Picker */}
@@ -339,13 +323,6 @@ export const StockActionScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* Barcode & QR Scanner Modal */}
-      <BarcodeScannerModal
-        visible={scannerVisible}
-        onClose={() => setScannerVisible(false)}
-        onScanItem={handleScanItem}
-        products={products}
-      />
     </View>
   );
 };
@@ -368,25 +345,12 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderColor: '#1e293b',
-    marginRight: 8,
   },
   toggleBtn: { flex: 1, paddingVertical: 12, alignItems: 'center', borderRadius: 10 },
   toggleInActive: { backgroundColor: '#10b981' },
   toggleOutActive: { backgroundColor: '#ef4444' },
   toggleText: { fontSize: 11, fontWeight: '900', color: '#94a3b8', letterSpacing: 0.5 },
   textWhite: { color: '#ffffff' },
-  scannerLaunchBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#101827',
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#00f2fe',
-  },
-  scannerLaunchIcon: { fontSize: 16, marginRight: 6 },
-  scannerLaunchText: { color: '#00f2fe', fontSize: 11, fontWeight: '900', letterSpacing: 0.5 },
   catScrollView: { flexGrow: 0, marginBottom: 12 },
   chip: {
     paddingHorizontal: 14,

@@ -32,10 +32,20 @@ export const requireAuth = async (req: AuthenticatedRequest, res: Response, next
 
   // 2. Allow API requests carrying x-user-role header to proceed
   if (roleHeader) {
+    let userId = '11111111-1111-1111-1111-111111111111'; // default to owner
+    let fullName = 'Restaurant Owner';
+    if (roleHeader === 'manager') {
+      userId = '22222222-2222-2222-2222-222222222222';
+      fullName = 'Store Manager';
+    } else if (roleHeader === 'staff') {
+      userId = '33333333-3333-3333-3333-333333333333';
+      fullName = 'Kitchen Staff';
+    }
+
     req.user = {
-      id: 'system-app-user',
+      id: userId,
       app_metadata: {},
-      user_metadata: { full_name: 'RDW Store User', role: roleHeader },
+      user_metadata: { full_name: fullName, role: roleHeader },
       aud: 'authenticated',
       created_at: new Date().toISOString(),
       role: roleHeader,
