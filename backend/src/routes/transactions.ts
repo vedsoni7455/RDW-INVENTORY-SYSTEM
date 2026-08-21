@@ -44,13 +44,7 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =
       });
     }
 
-    // Role-based check: Only owners/managers can add stock
-    if (changeType === 'IN' && !['owner', 'manager'].includes(req.user?.role || '')) {
-      return res.status(403).json({
-        success: false,
-        error: 'Forbidden. You do not have permission to add stock.',
-      });
-    }
+
 
     const qtyNum = Number(quantity);
     if (isNaN(qtyNum) || qtyNum <= 0) {
