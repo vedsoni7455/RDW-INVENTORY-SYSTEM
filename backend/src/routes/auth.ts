@@ -20,6 +20,17 @@ router.post('/register', async (req, res) => {
   }
 
   try {
+    // 0. Check if email already exists in public.users profile (to prevent constraint failures)
+    const { data: existingProfile } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.trim().toLowerCase())
+      .maybeSingle();
+
+    if (existingProfile) {
+      return res.status(400).json({ error: 'This email is already registered. Please go back and Log In instead.' });
+    }
+
     let finalRestaurantId = restaurant_id;
 
     // 1. Handle Tenant/Restaurant Setup
