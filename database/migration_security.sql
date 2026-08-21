@@ -82,6 +82,8 @@ ALTER TABLE public.products ALTER COLUMN restaurant_id SET NOT NULL;
 -- Remove legacy global uniqueness constraints to allow identical product names across different restaurants
 ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_name_key;
 ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_sku_key;
+ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_restaurant_name_key;
+ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_restaurant_sku_key;
 
 -- Add restaurant-scoped uniqueness constraints
 ALTER TABLE public.products ADD CONSTRAINT products_restaurant_name_key UNIQUE (restaurant_id, name);
