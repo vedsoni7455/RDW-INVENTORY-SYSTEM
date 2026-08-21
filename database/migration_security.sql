@@ -11,7 +11,58 @@ CREATE TABLE IF NOT EXISTS public.restaurants (
 
 -- 2. SEED DEFAULT RESTAURANT FOR EXISTING RECORDS
 INSERT INTO public.restaurants (id, name)
-VALUES ('d0f11111-1111-1111-1111-d0f111111111', 'Default Restaurant')
+VALUES ('d0f11111-1111-1111-1111-d0f111111111', 'Rajubhai Dosawala')
+ON CONFLICT (id) DO UPDATE SET name = 'Rajubhai Dosawala';
+
+-- ENABLE SECURE CRYPT ALGORITHMS
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- SEED FIXED OWNER ACCOUNT IN SUPABASE AUTH SYSTEM
+INSERT INTO auth.users (
+    instance_id,
+    id,
+    aud,
+    role,
+    email,
+    encrypted_password,
+    email_confirmed_at,
+    raw_app_meta_data,
+    raw_user_meta_data,
+    created_at,
+    updated_at,
+    confirmation_token,
+    email_change,
+    email_change_token_new,
+    recovery_token
+)
+VALUES (
+    '00000000-0000-0000-0000-000000000000',
+    'f0e11111-1111-1111-1111-f0e111111111',
+    'authenticated',
+    'authenticated',
+    'rajubhaidosawala1060@gmail.com',
+    crypt('rdw01082016', gen_salt('bf')),
+    now(),
+    '{"provider":"email","providers":["email"]}',
+    '{"full_name":"Rajubhai Dosawala Owner","role":"owner","restaurant_id":"d0f11111-1111-1111-1111-d0f111111111"}',
+    now(),
+    now(),
+    '',
+    '',
+    '',
+    ''
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- SEED FIXED OWNER IN PUBLIC PROFILES TABLE
+INSERT INTO public.users (id, email, name, role, restaurant_id)
+VALUES (
+    'f0e11111-1111-1111-1111-f0e111111111',
+    'rajubhaidosawala1060@gmail.com',
+    'Rajubhai Dosawala Owner',
+    'owner',
+    'd0f11111-1111-1111-1111-d0f111111111'
+)
 ON CONFLICT (id) DO NOTHING;
 
 -- 3. MIGRATE USERS TABLE
