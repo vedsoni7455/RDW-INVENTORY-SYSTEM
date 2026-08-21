@@ -190,6 +190,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Create helper function to fetch current user's role securely (prevents RLS infinite recursion)
+CREATE OR REPLACE FUNCTION public.get_user_role()
+RETURNS VARCHAR AS $$
+BEGIN
+    RETURN (SELECT role FROM public.users WHERE id = auth.uid());
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Enable RLS on restaurants table
 ALTER TABLE public.restaurants ENABLE ROW LEVEL SECURITY;
 
@@ -203,7 +211,7 @@ FOR INSERT TO authenticated WITH CHECK (true);
 CREATE POLICY "Owners can manage their restaurant" ON public.restaurants
 FOR ALL TO authenticated USING (
     id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'owner')
+    public.get_user_role() = 'owner'
 );
 
 -- Users Policies
@@ -219,7 +227,7 @@ FOR UPDATE TO authenticated USING (id = auth.uid()) WITH CHECK (id = auth.uid())
 CREATE POLICY "Owners and managers can manage restaurant users" ON public.users
 FOR ALL TO authenticated USING (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('owner', 'manager'))
+    public.get_user_role() IN ('owner', 'manager')
 );
 
 -- Products Policies
@@ -229,19 +237,19 @@ FOR SELECT TO authenticated USING (restaurant_id = public.get_user_restaurant_id
 CREATE POLICY "Owners/managers can insert products" ON public.products
 FOR INSERT TO authenticated WITH CHECK (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('owner', 'manager'))
+    public.get_user_role() IN ('owner', 'manager')
 );
 
 CREATE POLICY "Owners/managers can update products" ON public.products
 FOR UPDATE TO authenticated USING (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('owner', 'manager'))
+    public.get_user_role() IN ('owner', 'manager')
 );
 
 CREATE POLICY "Owners/managers can delete products" ON public.products
 FOR DELETE TO authenticated USING (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('owner', 'manager'))
+    public.get_user_role() IN ('owner', 'manager')
 );
 
 -- Stock Transactions Policies
@@ -256,7 +264,7 @@ FOR INSERT TO authenticated WITH CHECK (
 CREATE POLICY "Owners/managers can delete transactions" ON public.stock_transactions
 FOR DELETE TO authenticated USING (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role IN ('owner', 'manager'))
+    public.get_user_role() IN ('owner', 'manager')
 );
 
 -- System Settings Policies
@@ -266,7 +274,7 @@ FOR SELECT TO authenticated USING (restaurant_id = public.get_user_restaurant_id
 CREATE POLICY "Owners can manage settings" ON public.system_settings
 FOR ALL TO authenticated USING (
     restaurant_id = public.get_user_restaurant_id() AND 
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'owner')
+    public.get_user_role() = 'owner'
 );
 
 -- Low Stock Alerts Log Policies
