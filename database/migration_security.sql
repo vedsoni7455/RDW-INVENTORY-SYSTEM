@@ -9,15 +9,15 @@ CREATE TABLE IF NOT EXISTS public.restaurants (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. SEED DEFAULT RESTAURANT FOR EXISTING RECORDS
+-- 2. SEED DEFAULT RESTAURANT & FIXED OWNER ACCOUNT FOR PRODUCTION USE
 INSERT INTO public.restaurants (id, name)
 VALUES ('d0f11111-1111-1111-1111-d0f111111111', 'Rajubhai Dosawala')
 ON CONFLICT (id) DO UPDATE SET name = 'Rajubhai Dosawala';
 
--- ENABLE SECURE CRYPT ALGORITHMS
+-- Enable secure crypt algorithms for password hashing
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
--- SEED FIXED OWNER ACCOUNT IN SUPABASE AUTH SYSTEM
+-- Seed the fixed owner account in Supabase Auth system
 INSERT INTO auth.users (
     instance_id,
     id,
@@ -54,7 +54,7 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
--- SEED FIXED OWNER IN PUBLIC PROFILES TABLE
+-- Seed the fixed owner profile in public users table
 INSERT INTO public.users (id, email, name, role, restaurant_id)
 VALUES (
     'f0e11111-1111-1111-1111-f0e111111111',
