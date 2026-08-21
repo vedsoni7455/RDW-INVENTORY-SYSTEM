@@ -4,11 +4,11 @@ import { ProductItem, StockTransaction, SummaryData } from '../types';
 
 function getApiBaseUrl(): string {
   if (Platform.OS === 'web') {
-    // In web browsers, default to localhost:5000 or the current hostname
-    if (typeof window !== 'undefined' && window.location.hostname) {
-      return `http://${window.location.hostname}:5000/api/v1`;
+    // In web browsers, default to localhost or the production Render server
+    if (typeof window !== 'undefined' && window.location.hostname && window.location.hostname === 'localhost') {
+      return 'http://localhost:5000/api/v1';
     }
-    return 'http://localhost:5000/api/v1';
+    return 'https://rdw-inventory-system.onrender.com/api/v1';
   }
 
   // Extract local Wi-Fi IP address when running inside Expo Go on physical phones
@@ -16,7 +16,7 @@ function getApiBaseUrl(): string {
   if (manifestHost && manifestHost !== 'localhost' && manifestHost !== '127.0.0.1') {
     return `http://${manifestHost}:5000/api/v1`;
   }
-  return 'http://localhost:5000/api/v1';
+  return 'https://rdw-inventory-system.onrender.com/api/v1';
 }
 
 export const API_BASE_URL = getApiBaseUrl();
