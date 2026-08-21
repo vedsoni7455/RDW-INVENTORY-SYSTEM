@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "RDW Inventory",
-    "slug": "rdw-inventory-system",
+    "slug": "rajubhaidosawala",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
@@ -16,6 +16,12 @@
     },
     "web": {
       "bundler": "metro"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "56768d75-d575-412f-844f-dfb0a5b2f7ca"
+      }
+    },
+    "owner": "rajubhai-dosawala"
   }
 }
