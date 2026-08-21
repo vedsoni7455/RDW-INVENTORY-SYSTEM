@@ -153,7 +153,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       // Automatically sign in locally after registration succeeds
-      await login(email, password);
+      try {
+        await login(email, password);
+      } catch (loginErr: any) {
+        if (loginErr.message?.toLowerCase().includes('confirm') || loginErr.message?.toLowerCase().includes('verification')) {
+          throw new Error('SUCCESS_CONFIRM_REQUIRED');
+        }
+        throw loginErr;
+      }
     } finally {
       setIsLoading(false);
     }

@@ -75,7 +75,15 @@ export const LoginScreen: React.FC = () => {
           await signup(name.trim(), email.trim(), password, selectedRole, undefined, restaurantIdInput.trim());
         }
       } catch (err: any) {
-        Alert.alert('Registration Failed', err.message);
+        if (err.message === 'SUCCESS_CONFIRM_REQUIRED') {
+          Alert.alert(
+            'Confirm Email 📧',
+            'Your account has been registered successfully! Please click the confirmation link sent to your email address before signing in.',
+            [{ text: 'OK', onPress: () => setIsSignUp(false) }]
+          );
+        } else {
+          Alert.alert('Registration Failed', err.message);
+        }
       }
     } else {
       try {
