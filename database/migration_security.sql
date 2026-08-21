@@ -151,13 +151,33 @@ WHERE current_stock <= minimum_threshold;
 -- Drop existing policies to avoid duplications
 DROP POLICY IF EXISTS "Users are viewable by authenticated users" ON public.users;
 DROP POLICY IF EXISTS "Owners and Managers can manage users" ON public.users;
+DROP POLICY IF EXISTS "Users can view coworkers" ON public.users;
+DROP POLICY IF EXISTS "Allow profile creation during signup" ON public.users;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.users;
+DROP POLICY IF EXISTS "Owners and managers can manage restaurant users" ON public.users;
+
 DROP POLICY IF EXISTS "Products are viewable by all authenticated users" ON public.products;
 DROP POLICY IF EXISTS "Owners and Managers can create products" ON public.products;
 DROP POLICY IF EXISTS "Owners and Managers can update products" ON public.products;
 DROP POLICY IF EXISTS "Owners and Managers can delete products" ON public.products;
+DROP POLICY IF EXISTS "Users can view restaurant products" ON public.products;
+DROP POLICY IF EXISTS "Owners/managers can insert products" ON public.products;
+DROP POLICY IF EXISTS "Owners/managers can update products" ON public.products;
+DROP POLICY IF EXISTS "Owners/managers can delete products" ON public.products;
+
 DROP POLICY IF EXISTS "Transactions viewable by all authenticated users" ON public.stock_transactions;
 DROP POLICY IF EXISTS "All authenticated users can log transactions" ON public.stock_transactions;
 DROP POLICY IF EXISTS "Owners and Managers can delete transactions" ON public.stock_transactions;
+DROP POLICY IF EXISTS "Users can view restaurant transactions" ON public.stock_transactions;
+DROP POLICY IF EXISTS "Users can log transactions" ON public.stock_transactions;
+DROP POLICY IF EXISTS "Owners/managers can delete transactions" ON public.stock_transactions;
+
+DROP POLICY IF EXISTS "Users can view restaurant settings" ON public.system_settings;
+DROP POLICY IF EXISTS "Owners can manage settings" ON public.system_settings;
+
+DROP POLICY IF EXISTS "Users can view restaurant alerts" ON public.low_stock_alerts_log;
+DROP POLICY IF EXISTS "System/backend can insert alerts" ON public.low_stock_alerts_log;
+
 DROP POLICY IF EXISTS "Users can view their own restaurant" ON public.restaurants;
 DROP POLICY IF EXISTS "Allow restaurant creation during signup" ON public.restaurants;
 DROP POLICY IF EXISTS "Owners can manage their restaurant" ON public.restaurants;
