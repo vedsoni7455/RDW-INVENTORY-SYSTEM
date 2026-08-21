@@ -203,7 +203,7 @@ ALTER TABLE public.restaurants ENABLE ROW LEVEL SECURITY;
 
 -- Restaurants Policies
 CREATE POLICY "Users can view their own restaurant" ON public.restaurants
-FOR SELECT TO authenticated USING (id = public.get_user_restaurant_id());
+FOR SELECT USING (true);
 
 CREATE POLICY "Allow restaurant creation during signup" ON public.restaurants
 FOR INSERT TO authenticated WITH CHECK (true);
