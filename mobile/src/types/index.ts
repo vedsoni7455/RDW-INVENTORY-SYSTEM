@@ -6,6 +6,7 @@ export interface UserProfile {
   name: string;
   role: UserRole;
   phone_number?: string;
+  restaurant_id?: string;
 }
 
 export interface ProductItem {

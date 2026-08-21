@@ -1,6 +1,26 @@
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { supabase } from './supabase';
 import { ProductItem, StockTransaction, SummaryData } from '../types';
+
+export async function getAuthHeaders(role?: string): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  if (role) {
+    headers['x-user-role'] = role;
+  }
+  
+  return headers;
+}
 
 function getApiBaseUrl(): string {
   if (Platform.OS === 'web') {
@@ -30,10 +50,9 @@ export async function fetchProducts(role: string, category?: string, search?: st
     if (category && category !== 'All' && category !== 'ALL') url += `category=${encodeURIComponent(category)}&`;
     if (search) url += `search=${encodeURIComponent(search)}&`;
 
+    const headers = await getAuthHeaders(role);
     const res = await fetch(url, {
-      headers: {
-        'x-user-role': role,
-      },
+      headers,
     });
     const json = await res.json();
     if (json.success && json.data) {
@@ -57,10 +76,9 @@ export async function fetchProducts(role: string, category?: string, search?: st
 
 export async function fetchSummaryData(role: string): Promise<SummaryData | null> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/reports/summary`, {
-      headers: {
-        'x-user-role': role,
-      },
+      headers,
     });
     const json = await res.json();
     if (json.success) return json.data;
@@ -75,12 +93,10 @@ export async function logStockTransaction(
   data: { productId: string; changeType: 'IN' | 'OUT'; quantity: number; unit: string; remark?: string }
 ): Promise<{ success: boolean; error?: string; message?: string; product?: ProductItem }> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/transactions`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-role': role,
-      },
+      headers,
       body: JSON.stringify(data),
     });
     return await res.json();
@@ -94,12 +110,10 @@ export async function createProductItem(
   data: { name: string; category: string; unit: string; minStock: number; openingStock: number; sku?: string }
 ): Promise<{ success: boolean; error?: string; data?: ProductItem }> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-role': role,
-      },
+      headers,
       body: JSON.stringify(data),
     });
     return await res.json();
@@ -114,12 +128,10 @@ export async function updateProductItem(
   data: { name?: string; category?: string; unit?: string; minStock?: number; totalStock?: number }
 ): Promise<{ success: boolean; error?: string; data?: ProductItem }> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/products/${encodeURIComponent(id)}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-user-role': role,
-      },
+      headers,
       body: JSON.stringify(data),
     });
     return await res.json();
@@ -133,11 +145,10 @@ export async function deleteProductItem(
   id: string
 ): Promise<{ success: boolean; error?: string; message?: string }> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/products/${encodeURIComponent(id)}`, {
       method: 'DELETE',
-      headers: {
-        'x-user-role': role,
-      },
+      headers,
     });
     return await res.json();
   } catch (err: any) {
@@ -150,10 +161,9 @@ export async function exportReportCSV(
   type: 'livestock' | 'lowstock' | 'stockin' | 'stockout'
 ): Promise<{ success: boolean; data?: string; error?: string }> {
   try {
+    const headers = await getAuthHeaders(role);
     const res = await fetch(`${API_BASE_URL}/reports/export?type=${type}`, {
-      headers: {
-        'x-user-role': role,
-      },
+      headers,
     });
     const text = await res.text();
     return { success: true, data: text };
@@ -170,10 +180,9 @@ export async function fetchTransactions(
   try {
     let url = `${API_BASE_URL}/transactions?limit=${limit}`;
     if (productId) url += `&productId=${productId}`;
+    const headers = await getAuthHeaders(role);
     const res = await fetch(url, {
-      headers: {
-        'x-user-role': role,
-      },
+      headers,
     });
     const json = await res.json();
     return { success: json.success, data: json.data };

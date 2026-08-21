@@ -1,5 +1,4 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, useWindowDimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, useWindowDimensions, Image, Clipboard } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
 
@@ -25,6 +24,17 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
           { text: 'Log Out', style: 'destructive', onPress: logout },
         ]
       );
+    }
+  };
+
+  const copyRestaurantId = () => {
+    if (user?.restaurant_id) {
+      Clipboard.setString(user.restaurant_id);
+      if (Platform.OS !== 'web') {
+        Alert.alert('Copied!', 'Restaurant ID copied to clipboard. Share this with your managers or staff.');
+      } else {
+        alert('Restaurant ID copied to clipboard!');
+      }
     }
   };
 
@@ -55,12 +65,21 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
               resizeMode="contain"
             />
           </View>
-          <View style={styles.textGroup}>
+          <TouchableOpacity 
+            onPress={copyRestaurantId} 
+            activeOpacity={user?.restaurant_id ? 0.7 : 1.0} 
+            style={styles.textGroup}
+          >
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.subtitle} numberOfLines={1}>
               {user?.name || 'Restaurant User'} • {subtitle || 'Rajubhai Dosawala'}
             </Text>
-          </View>
+            {user?.restaurant_id && (
+              <Text style={styles.idSub}>
+                ID: {user.restaurant_id} 📋
+              </Text>
+            )}
+          </TouchableOpacity>
         </View>
 
         {/* Fixed Non-Interactive Role Display & Logout */}
@@ -158,6 +177,12 @@ const styles = StyleSheet.create({
     color: '#94a3b8',
     marginTop: 1,
     fontWeight: '600',
+  },
+  idSub: {
+    fontSize: 9,
+    color: '#38bdf8',
+    marginTop: 2,
+    fontWeight: '700',
   },
   rightActions: {
     flexDirection: 'row',

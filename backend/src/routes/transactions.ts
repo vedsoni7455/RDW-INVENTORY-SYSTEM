@@ -24,6 +24,26 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =
       });
     }
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
+    // Verify product belongs to user's restaurant (IDOR check)
+    const { data: productCheck, error: checkErr } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', productId)
+      .eq('restaurant_id', restaurantId)
+      .single();
+
+    if (checkErr || !productCheck) {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden. This product does not belong to your restaurant.',
+      });
+    }
+
     // Role-based check: Only owners/managers can add stock
     if (changeType === 'IN' && !['owner', 'manager'].includes(req.user?.role || '')) {
       return res.status(403).json({
@@ -45,6 +65,7 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =
       .from('stock_transactions')
       .insert({
         product_id: productId,
+        restaurant_id: restaurantId,
         change_type: changeType,
         quantity: qtyNum,
         unit: unit || 'Kg',
@@ -62,6 +83,7 @@ router.post('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =
       .from('products')
       .select('*')
       .eq('id', productId)
+      .eq('restaurant_id', restaurantId)
       .single();
 
     const product: any = productData;
@@ -98,9 +120,15 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =>
   try {
     const { limit = 50, productId } = req.query;
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     let query = supabase
       .from('stock_transactions')
       .select('*, product:products(name, category)')
+      .eq('restaurant_id', restaurantId)
       .order('created_at', { ascending: false })
       .limit(Number(limit));
 

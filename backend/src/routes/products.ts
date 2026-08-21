@@ -13,10 +13,16 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =>
   try {
     const { category, search } = req.query;
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     // Try fetching from v_live_stock view first
     let { data: liveStock, error } = await supabase
       .from('v_live_stock')
       .select('*')
+      .eq('restaurant_id', restaurantId)
       .order('name', { ascending: true });
 
     // Fallback to querying products table directly if view is missing
@@ -24,6 +30,7 @@ router.get('/', requireAuth, async (req: AuthenticatedRequest, res: Response) =>
       const { data: rawProducts, error: prodErr } = await supabase
         .from('products')
         .select('*')
+        .eq('restaurant_id', restaurantId)
         .order('name', { ascending: true });
 
       if (prodErr) throw prodErr;
@@ -118,6 +125,11 @@ router.post('/', requireAuth, requireRole(['owner', 'manager']), async (req: Aut
       return res.status(400).json({ success: false, error: 'Product name is required.' });
     }
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     const minVal = Number(minStock) || 5;
     const openVal = Number(openingStock) || 0;
 
@@ -131,6 +143,7 @@ router.post('/', requireAuth, requireRole(['owner', 'manager']), async (req: Aut
         minimum_threshold: minVal,
         opening_stock: openVal,
         total_stock: openVal,
+        restaurant_id: restaurantId,
       })
       .select()
       .single();
@@ -173,6 +186,11 @@ router.put('/:id', requireAuth, requireRole(['owner', 'manager']), async (req: A
     const { id } = req.params;
     const { name, category, unit, minStock, totalStock } = req.body;
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     const updates: Record<string, any> = {
       updated_at: new Date().toISOString(),
     };
@@ -183,10 +201,23 @@ router.put('/:id', requireAuth, requireRole(['owner', 'manager']), async (req: A
     if (minStock !== undefined) updates.minimum_threshold = Number(minStock);
     if (totalStock !== undefined) updates.total_stock = Number(totalStock);
 
+    // Verify product ownership (IDOR check)
+    const { data: existingProduct, error: checkErr } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', id)
+      .eq('restaurant_id', restaurantId)
+      .single();
+
+    if (checkErr || !existingProduct) {
+      return res.status(403).json({ success: false, error: 'Forbidden. This product does not belong to your restaurant.' });
+    }
+
     const { data, error } = await supabase
       .from('products')
       .update(updates)
       .eq('id', id)
+      .eq('restaurant_id', restaurantId)
       .select()
       .single();
 
@@ -229,7 +260,28 @@ router.delete('/:id', requireAuth, requireRole(['owner', 'manager']), async (req
   try {
     const { id } = req.params;
 
-    const { error } = await supabase.from('products').delete().eq('id', id);
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
+    // Verify product ownership (IDOR check)
+    const { data: existingProduct, error: checkErr } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', id)
+      .eq('restaurant_id', restaurantId)
+      .single();
+
+    if (checkErr || !existingProduct) {
+      return res.status(403).json({ success: false, error: 'Forbidden. This product does not belong to your restaurant.' });
+    }
+
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+      .eq('restaurant_id', restaurantId);
 
     if (error) throw error;
 

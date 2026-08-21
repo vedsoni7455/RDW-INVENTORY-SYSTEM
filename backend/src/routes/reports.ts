@@ -7,8 +7,16 @@ const router = Router();
 // GET /api/v1/reports/summary - Analytical dashboard metrics
 router.get('/summary', requireAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     // 1. Fetch products count and low stock count
-    const { data: products, error: prodErr } = await supabase.from('products').select('*');
+    const { data: products, error: prodErr } = await supabase
+      .from('products')
+      .select('*')
+      .eq('restaurant_id', restaurantId);
 
     if (prodErr) throw prodErr;
 
@@ -21,6 +29,7 @@ router.get('/summary', requireAuth, async (req: AuthenticatedRequest, res: Respo
     const { data: transactions, error: txErr } = await supabase
       .from('stock_transactions')
       .select('*, products(name, category)')
+      .eq('restaurant_id', restaurantId)
       .order('created_at', { ascending: false });
 
     if (txErr) console.warn('[Reports Summary] Transactions fetch warning:', txErr.message);
@@ -114,19 +123,33 @@ router.get('/export', requireAuth, async (req: AuthenticatedRequest, res: Respon
     const type = (req.query.type as string) || 'livestock';
     let csvData = '';
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     if (type === 'livestock') {
-      const { data, error } = await supabase.from('products').select().csv();
+      const { data, error } = await supabase
+        .from('products')
+        .select()
+        .eq('restaurant_id', restaurantId)
+        .csv();
       if (error) throw error;
       csvData = data;
     } else if (type === 'lowstock') {
-      const { data, error } = await supabase.from('products').select().csv();
+      const { data, error } = await supabase
+        .from('v_low_stock')
+        .select()
+        .eq('restaurant_id', restaurantId)
+        .csv();
       if (error) throw error;
-      // Convert to CSV for low stock
-      const filtered = (data || '').split('\n').filter(line => line.length > 0);
-      csvData = filtered.join('\n');
+      csvData = data;
     } else {
       const txType = type === 'stockin' ? 'IN' : type === 'stockout' ? 'OUT' : undefined;
-      let query = supabase.from('stock_transactions').select();
+      let query = supabase
+        .from('stock_transactions')
+        .select()
+        .eq('restaurant_id', restaurantId);
       if (txType) {
         query = query.eq('change_type', txType);
       }

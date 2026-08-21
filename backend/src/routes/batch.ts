@@ -13,11 +13,17 @@ router.post('/adjustments', requireAuth, requireRole(['owner', 'manager']), asyn
       return res.status(400).json({ success: false, error: 'items array is required' });
     }
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
     // Prepare the records for Supabase, ensuring data integrity
     const transactionsToInsert = items
       .filter(item => item.productId && item.changeType && item.quantity > 0)
       .map(item => ({
         product_id: item.productId,
+        restaurant_id: restaurantId,
         change_type: item.changeType,
         quantity: Number(item.quantity),
         unit: item.unit,
@@ -28,6 +34,21 @@ router.post('/adjustments', requireAuth, requireRole(['owner', 'manager']), asyn
 
     if (transactionsToInsert.length === 0) {
       return res.status(400).json({ success: false, error: 'No valid items to process.' });
+    }
+
+    // Verify product ownership for all batch items (IDOR check)
+    const productIds = Array.from(new Set(transactionsToInsert.map(t => t.product_id)));
+    const { data: validProducts, error: checkErr } = await supabase
+      .from('products')
+      .select('id')
+      .in('id', productIds)
+      .eq('restaurant_id', restaurantId);
+
+    if (checkErr || !validProducts || validProducts.length !== productIds.length) {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden. One or more products do not belong to your restaurant.',
+      });
     }
 
     // Insert all valid transactions in a single batch call to the database

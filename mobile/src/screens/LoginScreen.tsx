@@ -21,10 +21,11 @@ export const LoginScreen: React.FC = () => {
   const isDesktop = width >= 768;
 
   const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('owner@rdwrestaurant.com');
-  const [password, setPassword] = useState('password123');
-  const [name, setName] = useState('Restaurant Owner');
-  const [restaurantName, setRestaurantName] = useState('RDW Fine Dining');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
+  const [restaurantIdInput, setRestaurantIdInput] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>('owner');
 
   const handleRoleSelect = (role: UserRole) => {
@@ -43,19 +44,14 @@ export const LoginScreen: React.FC = () => {
     }
   };
 
-  const handleQuickDemoLogin = (role: UserRole) => {
-    if (role === 'owner') {
-      login('Restaurant Owner', 'owner@rdwrestaurant.com', 'owner');
-    } else if (role === 'manager') {
-      login('Store Manager', 'manager@rdwrestaurant.com', 'manager');
-    } else {
-      login('Kitchen Staff', 'staff@rdwrestaurant.com', 'staff');
-    }
-  };
-
   const handleSubmit = async () => {
     if (!email || !email.includes('@')) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      Alert.alert('Invalid Password', 'Password must be at least 6 characters.');
       return;
     }
 
@@ -64,9 +60,29 @@ export const LoginScreen: React.FC = () => {
         Alert.alert('Validation Error', 'Please enter your full name.');
         return;
       }
-      await signup(name.trim(), email.trim(), selectedRole, restaurantName.trim());
+      try {
+        if (selectedRole === 'owner') {
+          if (!restaurantName.trim()) {
+            Alert.alert('Validation Error', 'Please enter your restaurant name.');
+            return;
+          }
+          await signup(name.trim(), email.trim(), password, selectedRole, restaurantName.trim(), undefined);
+        } else {
+          if (!restaurantIdInput.trim()) {
+            Alert.alert('Validation Error', 'Please enter the Restaurant ID provided by your owner.');
+            return;
+          }
+          await signup(name.trim(), email.trim(), password, selectedRole, undefined, restaurantIdInput.trim());
+        }
+      } catch (err: any) {
+        Alert.alert('Registration Failed', err.message);
+      }
     } else {
-      await login(name, email, selectedRole);
+      try {
+        await login(email.trim(), password);
+      } catch (err: any) {
+        Alert.alert('Login Failed', err.message);
+      }
     }
   };
 
@@ -100,47 +116,7 @@ export const LoginScreen: React.FC = () => {
               </Text>
             </View>
 
-            {/* Quick Demo Access Bar */}
-            <View style={styles.demoSection}>
-              <Text style={styles.quickAccessLabel}>⚡ Instant 1-Click Role Logins:</Text>
-              <View style={styles.demoBar}>
-                <TouchableOpacity
-                  style={[styles.demoBtn, styles.demoBtnOwner]}
-                  onPress={() => handleQuickDemoLogin('owner')}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.demoIcon}>👑</Text>
-                  <View>
-                    <Text style={styles.demoText}>Owner</Text>
-                    <Text style={styles.demoSub}>Full Edit & Fin</Text>
-                  </View>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.demoBtn, styles.demoBtnManager]}
-                  onPress={() => handleQuickDemoLogin('manager')}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.demoIcon}>👔</Text>
-                  <View>
-                    <Text style={styles.demoText}>Manager</Text>
-                    <Text style={styles.demoSub}>Stock Ops & Cat</Text>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.demoBtn, styles.demoBtnStaff]}
-                  onPress={() => handleQuickDemoLogin('staff')}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.demoIcon}>🍳</Text>
-                  <View>
-                    <Text style={styles.demoText}>Staff</Text>
-                    <Text style={styles.demoSub}>In/Out Entry</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
 
             {/* Auth Mode Switcher Tabs */}
             <View style={styles.modeTabContainer}>
@@ -213,28 +189,44 @@ export const LoginScreen: React.FC = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Form Fields */}
-            {isSignUp && (
-              <>
-                <Text style={styles.inputLabel}>Restaurant / Branch Name</Text>
-                <TextInput
-                  style={styles.input}
-                  value={restaurantName}
-                  onChangeText={setRestaurantName}
-                  placeholder="e.g. RDW Fine Dining"
-                  placeholderTextColor="#64748b"
-                />
+             {/* Form Fields */}
+             {isSignUp && (
+               <>
+                 {selectedRole === 'owner' ? (
+                   <>
+                     <Text style={styles.inputLabel}>Restaurant / Branch Name *</Text>
+                     <TextInput
+                       style={styles.input}
+                       value={restaurantName}
+                       onChangeText={setRestaurantName}
+                       placeholder="e.g. RDW Fine Dining"
+                       placeholderTextColor="#64748b"
+                     />
+                   </>
+                 ) : (
+                   <>
+                     <Text style={styles.inputLabel}>Restaurant ID * (Provided by Owner)</Text>
+                     <TextInput
+                       style={styles.input}
+                       value={restaurantIdInput}
+                       onChangeText={setRestaurantIdInput}
+                       placeholder="Enter Restaurant ID (UUID)"
+                       placeholderTextColor="#64748b"
+                       autoCapitalize="none"
+                     />
+                   </>
+                 )}
 
-                <Text style={styles.inputLabel}>Full Name *</Text>
-                <TextInput
-                  style={styles.input}
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Enter your full name"
-                  placeholderTextColor="#64748b"
-                />
-              </>
-            )}
+                 <Text style={styles.inputLabel}>Full Name *</Text>
+                 <TextInput
+                   style={styles.input}
+                   value={name}
+                   onChangeText={setName}
+                   placeholder="Enter your full name"
+                   placeholderTextColor="#64748b"
+                 />
+               </>
+             )}
 
             <Text style={styles.inputLabel}>Email Address *</Text>
             <TextInput

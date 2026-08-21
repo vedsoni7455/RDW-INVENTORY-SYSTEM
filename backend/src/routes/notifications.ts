@@ -37,6 +37,26 @@ router.post('/test-alert', requireAuth, requireRole(['owner', 'manager']), async
       return res.status(400).json({ success: false, error: 'productId is required.' });
     }
 
+    const restaurantId = req.user?.restaurant_id;
+    if (!restaurantId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Tenant context missing.' });
+    }
+
+    // Verify product belongs to user's restaurant (IDOR check)
+    const { data: product, error: checkErr } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', productId)
+      .eq('restaurant_id', restaurantId)
+      .single();
+
+    if (checkErr || !product) {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden. This product does not belong to your restaurant.',
+      });
+    }
+
     dispatchMultiChannelLowStockAlert(productId).catch(err => console.error(err));
 
     res.json({ success: true, message: 'Test multi-channel low stock notification triggered (Push, Email, SMS).' });

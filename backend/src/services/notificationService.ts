@@ -2,15 +2,16 @@ import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 import { supabase } from '../config/supabase';
 import { sendLowStockEmailAlert } from './emailService';
 import { sendLowStockSMSAlert } from './smsService';
+import { companyEmail } from '../config/nodemailer';
 
 const expo = new Expo();
 
 export async function dispatchMultiChannelLowStockAlert(productId: string): Promise<void> {
   try {
-    // 1. Fetch product current stock details
+    // 1. Fetch product current stock details and its restaurant_id
     const { data: product, error: pErr } = await supabase
       .from('products')
-      .select('id, name, category, unit, total_stock, minimum_threshold')
+      .select('id, name, category, unit, total_stock, minimum_threshold, restaurant_id')
       .eq('id', productId)
       .single();
 
@@ -26,11 +27,24 @@ export async function dispatchMultiChannelLowStockAlert(productId: string): Prom
 
     console.log(`[Multi-Channel Dispatcher] Low Stock Triggered for "${product.name}" (${product.total_stock} <= ${product.minimum_threshold})`);
 
-    // 2. Fetch admin users (Owners and Managers)
+    // 2. Fetch system settings for this specific restaurant
+    const { data: settings } = await supabase
+      .from('system_settings')
+      .select('company_email, low_stock_email_alerts_enabled, low_stock_sms_alerts_enabled, low_stock_push_alerts_enabled')
+      .eq('restaurant_id', product.restaurant_id)
+      .maybeSingle();
+
+    const targetEmail = settings?.company_email || companyEmail;
+    const emailEnabled = settings ? settings.low_stock_email_alerts_enabled : true;
+    const smsEnabled = settings ? settings.low_stock_sms_alerts_enabled : true;
+    const pushEnabled = settings ? settings.low_stock_push_alerts_enabled : true;
+
+    // 3. Fetch admin users (Owners and Managers) for THIS restaurant only
     const { data: adminUsers } = await supabase
       .from('users')
       .select('id, name, role, email, phone_number, push_token, notify_sms, notify_email, notify_push')
-      .in('role', ['owner', 'manager']);
+      .in('role', ['owner', 'manager'])
+      .eq('restaurant_id', product.restaurant_id);
 
     const ownerManagerPhones = (adminUsers || [])
       .filter(u => u.phone_number && u.notify_sms !== false)
@@ -40,9 +54,9 @@ export async function dispatchMultiChannelLowStockAlert(productId: string): Prom
       .filter(u => u.push_token && u.notify_push !== false && Expo.isExpoPushToken(u.push_token))
       .map(u => u.push_token as string);
 
-    // 3. Dispatch Channel 1: Mobile Push Notifications via Expo / FCM
+    // 4. Dispatch Channel 1: Mobile Push Notifications via Expo
     let pushSuccess = false;
-    if (pushTokens.length > 0) {
+    if (pushEnabled && pushTokens.length > 0) {
       const messages: ExpoPushMessage[] = pushTokens.map(token => ({
         to: token,
         sound: 'default',
@@ -61,30 +75,37 @@ export async function dispatchMultiChannelLowStockAlert(productId: string): Prom
         }
       }
     } else {
-      console.log('[Push Alert] No valid Expo push tokens found for admin devices.');
+      console.log('[Push Alert] Push notifications disabled or no active admin tokens.');
     }
 
-    // 4. Dispatch Channel 2: Company Email Notification
-    const emailSuccess = await sendLowStockEmailAlert({
-      productName: product.name,
-      category: product.category,
-      currentStock: Number(product.total_stock),
-      minimumThreshold: Number(product.minimum_threshold),
-      unit: product.unit,
-    });
+    // 5. Dispatch Channel 2: Company Email Notification
+    let emailSuccess = false;
+    if (emailEnabled) {
+      emailSuccess = await sendLowStockEmailAlert({
+        productName: product.name,
+        category: product.category,
+        currentStock: Number(product.total_stock),
+        minimumThreshold: Number(product.minimum_threshold),
+        unit: product.unit,
+      });
+    }
 
-    // 5. Dispatch Channel 3: SMS Text Message to Owner & Manager Phone Numbers
-    const smsSuccess = await sendLowStockSMSAlert({
-      phoneNumbers: ownerManagerPhones,
-      productName: product.name,
-      currentStock: Number(product.total_stock),
-      minimumThreshold: Number(product.minimum_threshold),
-      unit: product.unit,
-    });
+    // 6. Dispatch Channel 3: SMS Text Message to Owner & Manager
+    let smsSuccess = false;
+    if (smsEnabled && ownerManagerPhones.length > 0) {
+      smsSuccess = await sendLowStockSMSAlert({
+        phoneNumbers: ownerManagerPhones,
+        productName: product.name,
+        currentStock: Number(product.total_stock),
+        minimumThreshold: Number(product.minimum_threshold),
+        unit: product.unit,
+      });
+    }
 
-    // 6. Log Alert Dispatch Audit
+    // 7. Log Alert Dispatch Audit linked to the restaurant
     await supabase.from('low_stock_alerts_log').insert({
       product_id: product.id,
+      restaurant_id: product.restaurant_id,
       product_name: product.name,
       current_stock: product.total_stock,
       minimum_threshold: product.minimum_threshold,

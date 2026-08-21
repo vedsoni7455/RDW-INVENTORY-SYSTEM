@@ -3,57 +3,54 @@ import { supabase } from '../config/supabase';
 import { User } from '@supabase/supabase-js';
 
 export interface AuthenticatedRequest extends Request {
-  user?: User & { role?: string };
+  user?: User & { role: string; restaurant_id: string };
 }
 
 /**
- * Middleware to verify Supabase JWT or accept role header for mobile client requests.
+ * Middleware to verify Supabase JWT and populate authenticated user context with tenant details.
  */
 export const requireAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
-  const roleHeader = (req.headers['x-user-role'] as string) || 'owner';
 
-  // 1. Try Supabase JWT Bearer token authentication
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1];
-    try {
-      const { data, error } = await supabase.auth.getUser(token);
-      if (!error && data.user) {
-        req.user = {
-          ...data.user,
-          role: data.user.user_metadata?.role || roleHeader,
-        };
-        return next();
-      }
-    } catch (error: any) {
-      console.warn('[Auth Middleware Note] Token verification fallback:', error.message);
-    }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, error: 'Unauthorized. Access token is required.' });
   }
 
-  // 2. Allow API requests carrying x-user-role header to proceed
-  if (roleHeader) {
-    let userId = '11111111-1111-1111-1111-111111111111'; // default to owner
-    let fullName = 'Restaurant Owner';
-    if (roleHeader === 'manager') {
-      userId = '22222222-2222-2222-2222-222222222222';
-      fullName = 'Store Manager';
-    } else if (roleHeader === 'staff') {
-      userId = '33333333-3333-3333-3333-333333333333';
-      fullName = 'Kitchen Staff';
+  const token = authHeader.split(' ')[1];
+
+  try {
+    // 1. Verify token signature and retrieve authenticated user ID from Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !authData.user) {
+      return res.status(401).json({ success: false, error: 'Unauthorized. Invalid or expired token.' });
     }
 
+    // 2. Query the user profile from database to get tenant details and role
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('restaurant_id, role')
+      .eq('id', authData.user.id)
+      .single();
+
+    if (profileError || !profile) {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden. User profile not found in database. Complete registration.',
+      });
+    }
+
+    // 3. Attach session context to request object
     req.user = {
-      id: userId,
-      app_metadata: {},
-      user_metadata: { full_name: fullName, role: roleHeader },
-      aud: 'authenticated',
-      created_at: new Date().toISOString(),
-      role: roleHeader,
+      ...authData.user,
+      role: profile.role,
+      restaurant_id: profile.restaurant_id,
     };
-    return next();
-  }
 
-  res.status(401).json({ success: false, error: 'Unauthorized. Access token or user role required.' });
+    return next();
+  } catch (error: any) {
+    console.error('[Auth Middleware Error] Failed to verify session:', error.message);
+    return res.status(401).json({ success: false, error: 'Unauthorized. Session verification failed.' });
+  }
 };
 
 /**
@@ -62,9 +59,9 @@ export const requireAuth = async (req: AuthenticatedRequest, res: Response, next
  */
 export const requireRole = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const userRole = req.user?.role || 'owner';
+    const userRole = req.user?.role;
 
-    if (!roles.includes(userRole)) {
+    if (!userRole || !roles.includes(userRole)) {
       return res.status(403).json({ success: false, error: 'Forbidden. You do not have the required permissions.' });
     }
 
