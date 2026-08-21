@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   useWindowDimensions,
+  Image,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
@@ -89,10 +90,11 @@ export const LoginScreen: React.FC = () => {
           <View style={styles.card}>
             {/* Header / Logo */}
             <View style={styles.logoContainer}>
-              <View style={styles.logoBadge}>
-                <Text style={styles.logoIcon}>🍽️</Text>
-              </View>
-              <Text style={styles.logoText}>RDW INVENTORY</Text>
+              <Image
+                source={require('../../assets/logo.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
               <Text style={styles.subtitle}>
                 Multi-Role Restaurant Stock & Supply Chain Management
               </Text>
@@ -343,6 +345,11 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginBottom: 16,
+  },
+  logoImage: {
+    width: 240,
+    height: 90,
+    marginBottom: 8,
   },
   logoBadge: {
     width: 58,

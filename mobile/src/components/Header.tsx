@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform, useWindowDimensions, Image } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
 
@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
     } else {
       Alert.alert(
         'Log Out',
-        'Are you sure you want to log out of RDW Inventory?',
+        'Are you sure you want to log out of Rajubhai Dosawala?',
         [
           { text: 'Cancel', style: 'cancel' },
           { text: 'Log Out', style: 'destructive', onPress: logout },
@@ -49,12 +49,16 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
         {/* Brand & Page Title */}
         <View style={styles.brandRow}>
           <View style={styles.logoBadge}>
-            <Text style={styles.logoText}>🍽️</Text>
+            <Image
+              source={require('../../assets/logo.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.textGroup}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.subtitle} numberOfLines={1}>
-              {user?.name || 'Restaurant User'} • {subtitle || 'RDW Inventory'}
+              {user?.name || 'Restaurant User'} • {subtitle || 'Rajubhai Dosawala'}
             </Text>
           </View>
         </View>
@@ -132,6 +136,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderWidth: 1,
     borderColor: '#1e2e4a',
+  },
+  logoImage: {
+    width: 32,
+    height: 32,
   },
   logoText: {
     fontSize: 20,

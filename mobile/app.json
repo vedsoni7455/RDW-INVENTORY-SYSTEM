@@ -1,18 +1,24 @@
 {
   "expo": {
-    "name": "RDW Inventory",
+    "name": "Rajubhai Dosawala",
     "slug": "rajubhaidosawala",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "com.rdwrestaurant.inventory"
+      "package": "com.rdwrestaurant.inventory",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#17171C"
+      }
     },
     "web": {
       "bundler": "metro"
