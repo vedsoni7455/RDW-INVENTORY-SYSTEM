@@ -17,6 +17,10 @@ ON CONFLICT (id) DO UPDATE SET name = 'Rajubhai Dosawala';
 -- Enable secure crypt algorithms for password hashing
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- Clean up any existing conflicting records for this email to prevent unique key violations
+DELETE FROM public.users WHERE email = 'rajubhaidosawala1060@gmail.com';
+DELETE FROM auth.users WHERE email = 'rajubhaidosawala1060@gmail.com';
+
 -- Seed the fixed owner account in Supabase Auth system
 INSERT INTO auth.users (
     instance_id,
