@@ -38,7 +38,7 @@ app.use('/api/', apiLimiter);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/products', requireAuth, productRoutes);
 app.use('/api/v1/transactions', requireAuth, transactionRoutes);
-app.use('/api/v1/reports', requireAuth, requireRole(['owner', 'manager']), reportRoutes);
+app.use('/api/v1/reports', requireAuth, reportRoutes);
 app.use('/api/v1/batch', requireAuth, requireRole(['owner', 'manager']), batchRoutes);
 app.use('/api/v1/notifications', requireAuth, notificationRoutes);
 
