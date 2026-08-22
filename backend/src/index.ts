@@ -172,7 +172,7 @@ app.get('/', (req, res) => {
 
 // --- APK Download Redirect Route ---
 app.get('/download-apk', (req, res) => {
-  const latestApkUrl = process.env.LATEST_APK_URL || 'https://expo.dev/artifacts/eas/5R7FBF8Yeh4Ppsn5TCQlALEQ4vRKle8m0LQnTXjgbo4.apk';
+  const latestApkUrl = process.env.LATEST_APK_URL || 'https://expo.dev/artifacts/eas/34F1ecg1fQgZUS7TFFT9IWRpgA6C1oWF6qRLPmFzHUY.apk';
   res.redirect(latestApkUrl);
 });
 
