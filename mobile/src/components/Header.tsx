@@ -38,6 +38,27 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
     }
   };
 
+  const shareInviteLink = (targetRole: 'staff' | 'manager') => {
+    if (!user?.restaurant_id) return;
+    
+    const baseUrl = Platform.OS === 'web' && typeof window !== 'undefined' 
+      ? `${window.location.origin}${window.location.pathname}`
+      : 'https://rdw-inventory-system.onrender.com';
+      
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    const inviteUrl = `${cleanBaseUrl}/?restaurantId=${user.restaurant_id}&role=${targetRole}`;
+    
+    Clipboard.setString(inviteUrl);
+    
+    const message = `${targetRole === 'manager' ? 'Manager' : 'Staff'} signup link copied to clipboard!\n\nShare this link with your team to onboard them directly into this restaurant context.`;
+    
+    if (Platform.OS !== 'web') {
+      Alert.alert('Link Copied! 🔗', message);
+    } else {
+      alert(message);
+    }
+  };
+
   const getRoleBadgeStyle = (targetRole: UserRole) => {
     switch (targetRole) {
       case 'owner':
@@ -75,9 +96,29 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
               {user?.name || 'Restaurant User'} • {subtitle || 'Rajubhai Dosawala'}
             </Text>
             {user?.restaurant_id && (
-              <Text style={styles.idSub}>
-                ID: {user.restaurant_id} 📋
-              </Text>
+              <View style={styles.inviteContainer}>
+                <Text style={styles.idSub}>
+                  ID: {user.restaurant_id} 📋
+                </Text>
+                {role === 'owner' && (
+                  <View style={styles.inviteButtonsRow}>
+                    <TouchableOpacity 
+                      onPress={(e) => { e.stopPropagation(); shareInviteLink('staff'); }}
+                      style={styles.inviteBtnStaff}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.inviteBtnText}>+ Staff Link 🍳</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={(e) => { e.stopPropagation(); shareInviteLink('manager'); }}
+                      style={styles.inviteBtnManager}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.inviteBtnText}>+ Manager Link 👔</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             )}
           </TouchableOpacity>
         </View>
@@ -212,5 +253,36 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     fontSize: 14,
+  },
+  inviteContainer: {
+    marginTop: 4,
+    alignItems: 'flex-start',
+  },
+  inviteButtonsRow: {
+    flexDirection: 'row',
+    marginTop: 6,
+  },
+  inviteBtnStaff: {
+    backgroundColor: '#064e3b',
+    borderColor: '#10b981',
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginRight: 6,
+  },
+  inviteBtnManager: {
+    backgroundColor: '#172554',
+    borderColor: '#3b82f6',
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  inviteBtnText: {
+    fontSize: 8,
+    color: '#f8fafc',
+    fontWeight: '900',
+    letterSpacing: 0.3,
   },
 });

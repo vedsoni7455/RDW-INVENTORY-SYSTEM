@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Platform,
   useWindowDimensions,
   Image,
+  Linking,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
@@ -44,6 +45,49 @@ export const LoginScreen: React.FC = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const parseUrl = (url: string) => {
+      try {
+        const queryString = url.split('?')[1];
+        if (queryString) {
+          const pairs = queryString.split('&');
+          let restId = '';
+          let roleParam = '';
+
+          pairs.forEach(pair => {
+            const [key, value] = pair.split('=');
+            if (key === 'restaurantId') restId = decodeURIComponent(value);
+            if (key === 'role') roleParam = decodeURIComponent(value);
+          });
+
+          if (restId) {
+            setRestaurantIdInput(restId);
+          }
+          if (roleParam === 'staff' || roleParam === 'manager') {
+            setSelectedRole(roleParam as UserRole);
+            setIsSignUp(true);
+            setName('');
+            setEmail('');
+          }
+        }
+      } catch (err) {
+        console.warn('[LoginScreen URL parse error]:', err);
+      }
+    };
+
+    Linking.getInitialURL().then((url: string | null) => {
+      if (url) parseUrl(url);
+    });
+
+    const subscription = Linking.addEventListener('url', (event: { url: string }) => {
+      if (event.url) parseUrl(event.url);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const handleSubmit = async () => {
     if (!email || !email.includes('@')) {
