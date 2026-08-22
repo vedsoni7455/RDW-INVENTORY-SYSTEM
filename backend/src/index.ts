@@ -97,7 +97,7 @@ app.get('/', (req, res) => {
             font-weight: bold;
             display: inline-block;
             transition: background-color 0.2s;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border: none;
             cursor: pointer;
             width: 100%;
@@ -105,6 +105,26 @@ app.get('/', (req, res) => {
           }
           .btn:hover {
             background-color: #00c6d2;
+          }
+          .btn-secondary {
+            background-color: transparent;
+            color: #38bdf8;
+            border: 2px solid #38bdf8;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          .btn-secondary:hover {
+            background-color: rgba(56, 189, 248, 0.15);
+            color: #ffffff;
+            border-color: #ffffff;
           }
           .sub-text {
             font-size: 11px;
@@ -125,6 +145,7 @@ app.get('/', (req, res) => {
           <h1>🍳 Invitation Received</h1>
           <p>You have been invited to join <strong>Rajubhai Dosawala</strong> as a <strong>\${(role as string).toUpperCase()}</strong>.</p>
           <a class="btn" href="rdwinventory://invite?restaurantId=\${restaurantId}&role=\${role}">OPEN IN APP</a>
+          <a class="btn-secondary" href="/download-apk">DOWNLOAD APP (APK)</a>
           <div class="sub-text">If the app does not open automatically, make sure you have the Rajubhai Dosawala APK installed on your device and click "Open in App".</div>
         </div>
       </body>
@@ -147,6 +168,12 @@ app.get('/', (req, res) => {
     </body>
     </html>
   `);
+});
+
+// --- APK Download Redirect Route ---
+app.get('/download-apk', (req, res) => {
+  const latestApkUrl = process.env.LATEST_APK_URL || 'https://expo.dev/artifacts/eas/5R7FBF8Yeh4Ppsn5TCQlALEQ4vRKle8m0LQnTXjgbo4.apk';
+  res.redirect(latestApkUrl);
 });
 
 // --- Health Check Route ---
