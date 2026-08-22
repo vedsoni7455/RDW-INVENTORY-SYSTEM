@@ -2,6 +2,7 @@
   "expo": {
     "name": "Rajubhai Dosawala",
     "slug": "rajubhaidosawala",
+    "scheme": "rdwinventory",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",

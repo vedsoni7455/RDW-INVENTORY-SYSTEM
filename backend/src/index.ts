@@ -42,6 +42,113 @@ app.use('/api/v1/reports', requireAuth, reportRoutes);
 app.use('/api/v1/batch', requireAuth, requireRole(['owner', 'manager']), batchRoutes);
 app.use('/api/v1/notifications', requireAuth, notificationRoutes);
 
+// --- Invite Redirection Route ---
+app.get('/', (req, res) => {
+  const { restaurantId, role } = req.query;
+
+  if (restaurantId && role) {
+    return res.status(200).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Onboarding - Rajubhai Dosawala</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            background-color: #060911;
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+          }
+          .card {
+            background-color: #101827;
+            border: 1px solid #1e2e4a;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+          }
+          h1 {
+            color: #00f2fe;
+            margin-top: 0;
+            font-size: 24px;
+          }
+          p {
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-size: 15px;
+          }
+          .btn {
+            background-color: #00f2fe;
+            color: #060911;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background-color 0.2s;
+            margin-bottom: 15px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          .btn:hover {
+            background-color: #00c6d2;
+          }
+          .sub-text {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+          }
+        </style>
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.location.href = "rdwinventory://invite?restaurantId=${restaurantId}&role=${role}";
+            }, 500);
+          };
+        </script>
+      </head>
+      <body>
+        <div class="card">
+          <h1>🍳 Invitation Received</h1>
+          <p>You have been invited to join <strong>Rajubhai Dosawala</strong> as a <strong>\${(role as string).toUpperCase()}</strong>.</p>
+          <a class="btn" href="rdwinventory://invite?restaurantId=\${restaurantId}&role=\${role}">OPEN IN APP</a>
+          <div class="sub-text">If the app does not open automatically, make sure you have the Rajubhai Dosawala APK installed on your device and click "Open in App".</div>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+
+  res.status(200).send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>RDW Inventory Backend</title>
+      <style>
+        body { background-color: #060911; color: #f8fafc; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        h1 { color: #00f2fe; font-size: 28px; }
+      </style>
+    </head>
+    <body>
+      <h1>✅ RDW Inventory Backend Service Online</h1>
+    </body>
+    </html>
+  `);
+});
+
 // --- Health Check Route ---
 app.get('/api/v1/health', (req, res) => {
   res.status(200).json({ service: 'rdw-inventory-backend', status: 'ok' });
