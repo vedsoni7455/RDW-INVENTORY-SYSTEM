@@ -198,8 +198,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Enable RLS on restaurants table
+-- Enable RLS on all multi-tenant tables to enforce row-level security
 ALTER TABLE public.restaurants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.stock_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.system_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.low_stock_alerts_log ENABLE ROW LEVEL SECURITY;
 
 -- Restaurants Policies
 CREATE POLICY "Users can view their own restaurant" ON public.restaurants
