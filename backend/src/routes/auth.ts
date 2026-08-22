@@ -54,6 +54,14 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ error: 'Restaurant ID is required for Manager or Staff accounts.' });
       }
 
+      if (role === 'manager') {
+        const managerKey = req.body.manager_key;
+        const requiredKey = process.env.MANAGER_REGISTRATION_KEY || 'rdwmanager2026';
+        if (managerKey !== requiredKey) {
+          return res.status(403).json({ error: 'Invalid Manager Registration Passcode. Please contact your Owner.' });
+        }
+      }
+
       const { data: restaurant, error: restErr } = await supabase
         .from('restaurants')
         .select('id')

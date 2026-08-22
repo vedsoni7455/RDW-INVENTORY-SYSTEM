@@ -14,7 +14,8 @@ interface AuthContextType {
     password: string,
     role: UserRole,
     restaurantName?: string,
-    restaurantId?: string
+    restaurantId?: string,
+    managerKey?: string
   ) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -144,7 +145,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string,
     role: UserRole,
     restaurantName?: string,
-    restaurantId?: string
+    restaurantId?: string,
+    managerKey?: string
   ) => {
     setIsLoading(true);
     try {
@@ -164,6 +166,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           role,
           restaurant_name: restaurantName,
           restaurant_id: restaurantId,
+          manager_key: managerKey,
         }),
       });
 

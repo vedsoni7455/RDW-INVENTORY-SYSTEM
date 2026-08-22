@@ -26,6 +26,7 @@ export const LoginScreen: React.FC = () => {
   const [name, setName] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
   const [restaurantIdInput, setRestaurantIdInput] = useState('');
+  const [managerKey, setManagerKey] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>('owner');
 
   const handleRoleSelect = (role: UserRole) => {
@@ -72,7 +73,15 @@ export const LoginScreen: React.FC = () => {
             Alert.alert('Validation Error', 'Please enter the Restaurant ID provided by your owner.');
             return;
           }
-          await signup(name.trim(), email.trim(), password, selectedRole, undefined, restaurantIdInput.trim());
+          if (selectedRole === 'manager') {
+            if (!managerKey.trim()) {
+              Alert.alert('Validation Error', 'Please enter the Manager Passcode.');
+              return;
+            }
+            await signup(name.trim(), email.trim(), password, selectedRole, undefined, restaurantIdInput.trim(), managerKey.trim());
+          } else {
+            await signup(name.trim(), email.trim(), password, selectedRole, undefined, restaurantIdInput.trim(), undefined);
+          }
         }
       } catch (err: any) {
         if (err.message === 'SUCCESS_CONFIRM_REQUIRED') {
@@ -222,6 +231,20 @@ export const LoginScreen: React.FC = () => {
                        placeholderTextColor="#64748b"
                        autoCapitalize="none"
                      />
+                     {selectedRole === 'manager' && (
+                       <>
+                         <Text style={styles.inputLabel}>Manager Passcode * (Provided by Owner)</Text>
+                         <TextInput
+                           style={styles.input}
+                           value={managerKey}
+                           onChangeText={setManagerKey}
+                           placeholder="Enter Manager Passcode"
+                           placeholderTextColor="#64748b"
+                           secureTextEntry
+                           autoCapitalize="none"
+                         />
+                       </>
+                     )}
                    </>
                  )}
 
