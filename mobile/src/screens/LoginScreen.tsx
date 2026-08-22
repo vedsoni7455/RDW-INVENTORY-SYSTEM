@@ -29,6 +29,7 @@ export const LoginScreen: React.FC = () => {
   const [restaurantIdInput, setRestaurantIdInput] = useState('');
   const [managerKey, setManagerKey] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>('owner');
+  const [lockedRole, setLockedRole] = useState<UserRole | null>(null);
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
@@ -66,6 +67,7 @@ export const LoginScreen: React.FC = () => {
           }
           if (roleParam === 'staff' || roleParam === 'manager') {
             setSelectedRole(roleParam as UserRole);
+            setLockedRole(roleParam as UserRole);
             setIsSignUp(true);
             setName('');
             setEmail('');
@@ -199,55 +201,63 @@ export const LoginScreen: React.FC = () => {
             </View>
 
             {/* Role Selection Cards */}
-            <Text style={styles.sectionLabel}>Select Access Role:</Text>
+            <Text style={styles.sectionLabel}>
+              {lockedRole ? 'Access Role (Locked):' : 'Select Access Role:'}
+            </Text>
             <View style={styles.roleGrid}>
               {/* OWNER */}
-              <TouchableOpacity
-                style={[styles.roleCard, selectedRole === 'owner' && styles.roleActiveOwner]}
-                onPress={() => handleRoleSelect('owner')}
-                activeOpacity={0.85}
-              >
-                <View style={styles.roleHeaderRow}>
-                  <Text style={styles.roleIcon}>👑</Text>
-                  {selectedRole === 'owner' && <View style={styles.activeCheck} />}
-                </View>
-                <Text style={[styles.roleTitle, selectedRole === 'owner' && styles.textWhite]}>
-                  OWNER
-                </Text>
-                <Text style={styles.roleDesc}>Full Edit: Analytics, Catalog CRUD, CSV Exports</Text>
-              </TouchableOpacity>
+              {!lockedRole && (
+                <TouchableOpacity
+                  style={[styles.roleCard, selectedRole === 'owner' && styles.roleActiveOwner]}
+                  onPress={() => handleRoleSelect('owner')}
+                  activeOpacity={0.85}
+                >
+                  <View style={styles.roleHeaderRow}>
+                    <Text style={styles.roleIcon}>👑</Text>
+                    {selectedRole === 'owner' && <View style={styles.activeCheck} />}
+                  </View>
+                  <Text style={[styles.roleTitle, selectedRole === 'owner' && styles.textWhite]}>
+                    OWNER
+                  </Text>
+                  <Text style={styles.roleDesc}>Full Edit: Analytics, Catalog CRUD, CSV Exports</Text>
+                </TouchableOpacity>
+              )}
 
               {/* MANAGER */}
-              <TouchableOpacity
-                style={[styles.roleCard, selectedRole === 'manager' && styles.roleActiveManager]}
-                onPress={() => handleRoleSelect('manager')}
-                activeOpacity={0.85}
-              >
-                <View style={styles.roleHeaderRow}>
-                  <Text style={styles.roleIcon}>👔</Text>
-                  {selectedRole === 'manager' && <View style={styles.activeCheck} />}
-                </View>
-                <Text style={[styles.roleTitle, selectedRole === 'manager' && styles.textWhite]}>
-                  MANAGER
-                </Text>
-                <Text style={styles.roleDesc}>Stock Refills, Item Master & Reorder Reports</Text>
-              </TouchableOpacity>
+              {(!lockedRole || lockedRole === 'manager') && (
+                <TouchableOpacity
+                  style={[styles.roleCard, selectedRole === 'manager' && styles.roleActiveManager]}
+                  onPress={() => handleRoleSelect('manager')}
+                  activeOpacity={0.85}
+                >
+                  <View style={styles.roleHeaderRow}>
+                    <Text style={styles.roleIcon}>👔</Text>
+                    {selectedRole === 'manager' && <View style={styles.activeCheck} />}
+                  </View>
+                  <Text style={[styles.roleTitle, selectedRole === 'manager' && styles.textWhite]}>
+                    MANAGER
+                  </Text>
+                  <Text style={styles.roleDesc}>Stock Refills, Item Master & Reorder Reports</Text>
+                </TouchableOpacity>
+              )}
 
               {/* STAFF */}
-              <TouchableOpacity
-                style={[styles.roleCard, selectedRole === 'staff' && styles.roleActiveStaff]}
-                onPress={() => handleRoleSelect('staff')}
-                activeOpacity={0.85}
-              >
-                <View style={styles.roleHeaderRow}>
-                  <Text style={styles.roleIcon}>🍳</Text>
-                  {selectedRole === 'staff' && <View style={styles.activeCheck} />}
-                </View>
-                <Text style={[styles.roleTitle, selectedRole === 'staff' && styles.textWhite]}>
-                  STAFF
-                </Text>
-                <Text style={styles.roleDesc}>Rapid Stock In/Out & Live Stock Feed</Text>
-              </TouchableOpacity>
+              {(!lockedRole || lockedRole === 'staff') && (
+                <TouchableOpacity
+                  style={[styles.roleCard, selectedRole === 'staff' && styles.roleActiveStaff]}
+                  onPress={() => handleRoleSelect('staff')}
+                  activeOpacity={0.85}
+                >
+                  <View style={styles.roleHeaderRow}>
+                    <Text style={styles.roleIcon}>🍳</Text>
+                    {selectedRole === 'staff' && <View style={styles.activeCheck} />}
+                  </View>
+                  <Text style={[styles.roleTitle, selectedRole === 'staff' && styles.textWhite]}>
+                    STAFF
+                  </Text>
+                  <Text style={styles.roleDesc}>Rapid Stock In/Out & Live Stock Feed</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
              {/* Form Fields */}
