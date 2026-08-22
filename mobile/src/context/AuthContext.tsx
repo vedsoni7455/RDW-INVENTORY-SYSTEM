@@ -7,7 +7,7 @@ interface AuthContextType {
   user: UserProfile | null;
   role: UserRole;
   setRole: (role: UserRole) => void;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, selectedRole?: UserRole) => Promise<void>;
   signup: (
     name: string,
     email: string,
@@ -105,14 +105,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, selectedRole?: UserRole) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw error;
+      if (!data.user) throw new Error('No user data returned.');
+
+      // Verify role matches database profile if provided
+      if (selectedRole) {
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select('role')
+          .eq('id', data.user.id)
+          .maybeSingle();
+
+        if (profileError || !profile) {
+          await supabase.auth.signOut();
+          throw new Error('User profile not found.');
+        }
+
+        if (profile.role !== selectedRole) {
+          await supabase.auth.signOut();
+          throw new Error(`Access denied. Your account is registered as '${profile.role}', but you selected '${selectedRole}'.`);
+        }
+      }
     } finally {
       setIsLoading(false);
     }
@@ -154,7 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Automatically sign in locally after registration succeeds
       try {
-        await login(email, password);
+        await login(email, password, role);
       } catch (loginErr: any) {
         if (loginErr.message?.toLowerCase().includes('confirm') || loginErr.message?.toLowerCase().includes('verification')) {
           throw new Error('SUCCESS_CONFIRM_REQUIRED');

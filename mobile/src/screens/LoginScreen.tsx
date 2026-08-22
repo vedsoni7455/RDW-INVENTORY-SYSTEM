@@ -87,7 +87,7 @@ export const LoginScreen: React.FC = () => {
       }
     } else {
       try {
-        await login(email.trim(), password);
+        await login(email.trim(), password, selectedRole);
       } catch (err: any) {
         Alert.alert('Login Failed', err.message);
       }
